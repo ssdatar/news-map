@@ -7,7 +7,8 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 // import Button from 'react-bootstrap/Button';
-import { csv } from 'd3-fetch';
+import axios from 'axios';
+import { csvParse } from 'd3-dsv';
 import groupBy from './utils';
 
 import './App.scss';
@@ -17,13 +18,19 @@ function App() {
   const [allData, setAllData] = useState(null);
   const [lookup, setLookup] = useState(null);
   const [hoverInfo, setHoverInfo] = useState(null);
+  const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ3OCcVgY7Sy8GBRUlrsLWJkfJnEtT5L7IqxNNRon1_Pw3keeVbNfs1h3QUFcFd9jz9cIfoIXg0MTn1/pub?gid=1853710081&single=true&output=csv';
 
   useEffect(() => {
-    csv('https://docs.google.com/spreadsheets/d/e/2PACX-1vQ3OCcVgY7Sy8GBRUlrsLWJkfJnEtT5L7IqxNNRon1_Pw3keeVbNfs1h3QUFcFd9jz9cIfoIXg0MTn1/pub?gid=1853710081&single=true&output=csv')
+    axios({
+      url: url, 
+      method: 'GET',
+      responseType: 'text',
+    })
     .then((res) => {
-      setAllData(res);
-      // console.log(groupBy(res));
-      setLookup(groupBy(res));
+      const sheet = csvParse(res.data);
+      console.log(sheet);
+      setAllData(sheet);
+      setLookup(groupBy(sheet));
     })
     .catch((err) => {
       console.log('Could not load data', err);
@@ -38,6 +45,7 @@ function App() {
     } = event;
     
     const hoveredFeature = features && features[0];
+    
     const selectedFeature = allData.filter(d => d.COUNTY.toLowerCase() === hoveredFeature.properties.NAME.toLowerCase());
     console.log(selectedFeature);
 
