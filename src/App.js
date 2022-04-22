@@ -9,7 +9,7 @@ import Col from 'react-bootstrap/Col';
 // import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import { csvParse } from 'd3-dsv';
-import groupBy from './utils';
+import addData from './utils';
 
 import './App.scss';
 
@@ -36,14 +36,18 @@ function App() {
     const geoJson = axios.get('colorado.json');
 
     axios.all([mainSheet, nonTraditional, geoJson])
-    .then(axios.spread((...responses) => {
-      setAllData(csvParse(responses[0].data));
-      setLookup(groupBy(responses[0].data));
-      setShapeFile(responses[2].data);
-    }))
-    .catch(errors => {
-      console.log(errors);
-    });
+      .then(axios.spread((...responses) => {
+        const parsedMain = csvParse(responses[0].data);
+        
+        setAllData(parsedMain);
+        setLookup(parsedMain);
+        setShapeFile(addData(responses[2].data, parsedMain));
+
+        console.log(addData(responses[2].data, parsedMain));
+      }))
+      .catch(errors => {
+        console.log(errors);
+      });
   };
 
   useEffect(() => {
@@ -55,15 +59,14 @@ function App() {
     const {
       features,
       point: {x, y},
-      // longitude: event.lngLat.lng,
-      // latitude: event.lngLat.lat,
     } = event;
     
     const hoveredFeature = features && features[0];
     hoveredFeature.longitude = event.lngLat.lng;
     hoveredFeature.latitude = event.lngLat.lat;
+    
     // const selectedFeature = allData.filter(d => d.COUNTY.toLowerCase() === hoveredFeature.properties.NAME.toLowerCase());
-    console.log(hoveredFeature && {feature: hoveredFeature, x, y});
+    // console.log(hoveredFeature && {feature: hoveredFeature, x, y});
 
     setHoverInfo(hoveredFeature && {feature: hoveredFeature, x, y});
   }, []);
@@ -76,26 +79,21 @@ function App() {
     id: 'colorado',
     type: 'fill',
     paint: {
-      'fill-color': '#545454',
-      'fill-outline-color': '#e5e5e5',
-      // {
-      //   property: 'percentile',
-      //   stops: [
-      //     [0, '#3288bd'],
-      //     [1, '#66c2a5'],
-      //     [2, '#abdda4'],
-      //     [3, '#e6f598'],
-      //     [4, '#ffffbf'],
-      //     [5, '#fee08b'],
-      //     [6, '#fdae61'],
-      //     [7, '#f46d43'],
-      //     [8, '#d53e4f']
-      //   ]
-      // },
+      'fill-outline-color': '#d3d3d3',
+      'fill-color': {
+        property: 'news_sources',
+        stops: [
+          [0, '#e5e5e5'],
+          [5, '#feebe2'],
+          [10, '#fbb4b9'],
+          [15, '#f768a1'],
+          [20, '#c51b8a'],
+          [25, '#7a0177'],
+        ]
+      },
       'fill-opacity': 0.8
     }
   };
-
 
   return (
     <Container fluid>
@@ -127,7 +125,8 @@ function App() {
                 closeButton={ false }
                 className="county-info"
               >
-                { hoverInfo.feature.properties.NAME }
+                <h5>{ hoverInfo.feature.properties.NAME }</h5>
+                <p>News sources: { hoverInfo.feature.properties.news_sources }</p>
               </Popup>
             )}
 
