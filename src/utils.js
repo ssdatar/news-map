@@ -1,20 +1,46 @@
 import { rollup, group } from 'd3-array';
 
-export default function addData(shape, data) {
-    // Calculate number of news sources
-    const lookup = rollup(data, v => v.length, d => d.COUNTY);
-    const grouped = group(data, d => d.COUNTY, d => d.SECTOR);
+export function processSheet(sheet) {
+  // console.log(sheet);
+  sheet.forEach(s => {
+    if (s.SECTOR.length < 2) {
+      s.SECTOR = 'Other';
+    }
+  });
+  return sheet;
+}
 
-    // Add to shapefile
-    shape.features.forEach(county => {
-        if (lookup.has(county.properties.NAME)) {
-            county.properties.news_sources = lookup.get(county.properties.NAME);
-        } else {
-            county.properties.news_sources = 0;
-        }
+export function addData(shape, data) {
+  // Calculate number of news sources
+  const lookup = rollup(data, v => v.length, d => d.COUNTY);
+  const grouped = group(data, d => d.COUNTY, d => d.SECTOR);
 
-    });
+  // Add to shapefile
+  shape.features.forEach(county => {
+    if (lookup.has(county.properties.NAME)) {
+      county.properties.news_sources = lookup.get(county.properties.NAME);
+      county.properties.news_sources_detail = grouped.get(county.properties.NAME);
 
-    console.log(Array.from(grouped.get('Denver')));
-    return shape;
+      const arr = [];
+      const countySourceSummary = grouped.get(county.properties.NAME);
+      
+      for (const key of countySourceSummary.keys()) {
+        arr.push([key.trim(), countySourceSummary.get(key).length])
+      }
+      county.properties.news_sources_list = countySourceSummary;
+    } else {
+      county.properties.news_sources = 0;
+      county.properties.news_sources_list = {};
+    }
+  });
+
+  // console.log(grouped.get('Denver'));
+  // grouped.get('Denver').forEach((_v, key) => {
+  //     console.log(_v, key);
+  // });
+  return shape;
+}
+
+export function lookupRef(data) {
+  return group(data, d => d.COUNTY, d => d.SECTOR);
 }

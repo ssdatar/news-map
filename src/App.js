@@ -1,15 +1,16 @@
 import { 
-  useState, useEffect, useMemo, useCallback,
+  useState, useEffect, useCallback,
 } from 'react';
 
 import Map, { Source, Layer, Popup } from 'react-map-gl';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Sources from './components/Sources';
 // import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import { csvParse } from 'd3-dsv';
-import addData from './utils';
+import { addData, processSheet, lookupRef } from './utils';
 
 import './App.scss';
 
@@ -21,38 +22,38 @@ function App() {
   const [hoverInfo, setHoverInfo] = useState(null);
   const [summary, setSummary] = useState(null);
 
-  const getData = () => {
-    const mainSheet = axios({
-        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ3OCcVgY7Sy8GBRUlrsLWJkfJnEtT5L7IqxNNRon1_Pw3keeVbNfs1h3QUFcFd9jz9cIfoIXg0MTn1/pub?gid=1853710081&single=true&output=csv', 
-        method: 'GET',
-        responseType: 'text',
-      });
-
-    const nonTraditional = axios({
-        url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ3OCcVgY7Sy8GBRUlrsLWJkfJnEtT5L7IqxNNRon1_Pw3keeVbNfs1h3QUFcFd9jz9cIfoIXg0MTn1/pub?gid=1853710081&single=true&output=csv', 
-        method: 'GET',
-        responseType: 'text',
-      });
-
-    const geoJson = axios.get('colorado.json');
-
-    axios.all([mainSheet, nonTraditional, geoJson])
-      .then(axios.spread((...responses) => {
-        const parsedMain = csvParse(responses[0].data);
-        
-        setAllData(parsedMain);
-        setLookup(parsedMain);
-        setShapeFile(addData(responses[2].data, parsedMain));
-      }))
-      .catch(errors => {
-        console.log(errors);
-      });
-  };
-
   useEffect(() => {
+    function getData() {
+      const mainSheet = axios({
+          url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ3OCcVgY7Sy8GBRUlrsLWJkfJnEtT5L7IqxNNRon1_Pw3keeVbNfs1h3QUFcFd9jz9cIfoIXg0MTn1/pub?gid=1853710081&single=true&output=csv', 
+          method: 'GET',
+          responseType: 'text',
+        });
+
+      const nonTraditional = axios({
+          url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ3OCcVgY7Sy8GBRUlrsLWJkfJnEtT5L7IqxNNRon1_Pw3keeVbNfs1h3QUFcFd9jz9cIfoIXg0MTn1/pub?gid=1853710081&single=true&output=csv', 
+          method: 'GET',
+          responseType: 'text',
+        });
+
+      const geoJson = axios.get('colorado.json');
+
+      axios.all([mainSheet, nonTraditional, geoJson])
+        .then(axios.spread((...responses) => {
+          const parsedMain = processSheet(csvParse(responses[0].data));
+          const shapeData = addData(responses[2].data, parsedMain);
+          
+          setAllData(parsedMain);
+          setLookup(lookupRef(parsedMain));
+          setShapeFile(shapeData);
+        }))
+        .catch(errors => {
+          console.log(errors);
+        });
+    };
+
     getData();
   }, []);
-
   
   const onHover = useCallback(event => {
     const {
@@ -64,11 +65,23 @@ function App() {
     
     hoveredFeature.longitude = event.lngLat.lng;
     hoveredFeature.latitude = event.lngLat.lat;
-    
+    hoveredFeature.source_summary = [];
+
+    if(lookup.get(hoveredFeature.properties.NAME)) {
+      const countySourceSummary = lookup.get(hoveredFeature.properties.NAME);
+      
+      countySourceSummary.forEach((_v, key) => {
+        hoveredFeature.source_summary.push([key, _v.length]);
+      });
+
+      hoveredFeature.source_summary = hoveredFeature.source_summary.sort((a, b) => {
+        return b[1] - a[1];
+      });
+    }
     setHoverInfo(hoveredFeature && {feature: hoveredFeature, x, y});
-    console.log(hoveredFeature)
+    console.log(hoveredFeature.source_summary);
     setSummary(hoveredFeature);
-  }, []);
+  }, [ lookup ]);
 
   const onLeave = () => { 
     setHoverInfo(null);
@@ -139,12 +152,6 @@ function App() {
                 <p>News sources: { hoverInfo.feature.properties.news_sources }</p>
               </Popup>
             )}
-
-            {/*{hoverInfo && (
-              <div className="tooltip" style={{left: hoverInfo.x, top: hoverInfo.y}}>
-                <div>County: {hoverInfo.feature.properties.NAME}</div>               
-              </div>
-            )}*/}
           </Map>
         </Col>
 
@@ -152,6 +159,8 @@ function App() {
           {summary && (
             <div>
               <h5>{ summary.properties.NAME }</h5>
+
+              <Sources county={summary.properties.NAME} sources={summary.source_summary} />
             </div>
           )}
         </Col>
