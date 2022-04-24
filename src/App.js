@@ -19,6 +19,7 @@ function App() {
   const [lookup, setLookup] = useState(null);
   const [shapeFile, setShapeFile] = useState(null);
   const [hoverInfo, setHoverInfo] = useState(null);
+  const [summary, setSummary] = useState(null);
 
   const getData = () => {
     const mainSheet = axios({
@@ -42,8 +43,6 @@ function App() {
         setAllData(parsedMain);
         setLookup(parsedMain);
         setShapeFile(addData(responses[2].data, parsedMain));
-
-        console.log(addData(responses[2].data, parsedMain));
       }))
       .catch(errors => {
         console.log(errors);
@@ -62,14 +61,19 @@ function App() {
     } = event;
     
     const hoveredFeature = features && features[0];
+    
     hoveredFeature.longitude = event.lngLat.lng;
     hoveredFeature.latitude = event.lngLat.lat;
     
-    // const selectedFeature = allData.filter(d => d.COUNTY.toLowerCase() === hoveredFeature.properties.NAME.toLowerCase());
-    // console.log(hoveredFeature && {feature: hoveredFeature, x, y});
-
     setHoverInfo(hoveredFeature && {feature: hoveredFeature, x, y});
+    console.log(hoveredFeature)
+    setSummary(hoveredFeature);
   }, []);
+
+  const onLeave = () => { 
+    setHoverInfo(null);
+    setSummary(null);
+  };
 
   // const data = useMemo(() => {
   //   return allData;
@@ -79,11 +83,12 @@ function App() {
     id: 'colorado',
     type: 'fill',
     paint: {
-      'fill-outline-color': '#d3d3d3',
+      'fill-outline-color': '#787878',
       'fill-color': {
         property: 'news_sources',
         stops: [
-          [0, '#e5e5e5'],
+          [0, 'transparent'],
+          [1, '#feebe2'],
           [5, '#feebe2'],
           [10, '#fbb4b9'],
           [15, '#f768a1'],
@@ -91,7 +96,12 @@ function App() {
           [25, '#7a0177'],
         ]
       },
-      'fill-opacity': 0.8
+      'fill-opacity': [
+        'case',
+        ['boolean', ['feature-state', 'hover'], false],
+        0.3,
+        0.85,
+      ],
     }
   };
 
@@ -106,12 +116,11 @@ function App() {
               zoom: 6
             }}
             style={{width: '100%', height: 450}}
-            mapStyle="mapbox://styles/mapbox/light-v10"
-            // mapStyle="mapbox://styles/datarkalloo/cl25brdxk001e14lpwvnxpjr7"
+            mapStyle="mapbox://styles/mapbox/dark-v10"
             mapboxAccessToken="pk.eyJ1IjoiZGF0YXJrYWxsb28iLCJhIjoiY2toOXI3aW5kMDRlZTJ4cWt0MW5kaHg4eCJ9.V4NfOecIoFaErvFv_lfKLg"
             interactiveLayerIds={['colorado']}
-            onMouseMove={onHover}
-            onMouseLeave={() => { setHoverInfo(null) }}>
+            onMouseMove={ onHover }
+            onMouseLeave={ onLeave }>
 
             <Source type="geojson" data={shapeFile}>
               <Layer {...fillColor} />
@@ -124,6 +133,7 @@ function App() {
                 offset={[0, -10]}
                 closeButton={ false }
                 className="county-info"
+                dynamicPosition={ false }
               >
                 <h5>{ hoverInfo.feature.properties.NAME }</h5>
                 <p>News sources: { hoverInfo.feature.properties.news_sources }</p>
@@ -137,6 +147,15 @@ function App() {
             )}*/}
           </Map>
         </Col>
+
+        <Col xs={12} md={4} lg={4}>
+          {summary && (
+            <div>
+              <h5>{ summary.properties.NAME }</h5>
+            </div>
+          )}
+        </Col>
+
       </Row>
     </Container>
   );

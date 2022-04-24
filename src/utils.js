@@ -1,8 +1,9 @@
-import { rollup, extent, mean, median } from 'd3-array';
+import { rollup, group } from 'd3-array';
 
 export default function addData(shape, data) {
     // Calculate number of news sources
     const lookup = rollup(data, v => v.length, d => d.COUNTY);
+    const grouped = group(data, d => d.COUNTY, d => d.SECTOR);
 
     // Add to shapefile
     shape.features.forEach(county => {
@@ -14,10 +15,6 @@ export default function addData(shape, data) {
 
     });
 
-    const values = shape.features.map(d => d.properties.news_sources);
-    console.log(extent(values), mean(values), median(values));
-
-    console.log(shape.features.filter(d => d.properties.news_sources === 81))
-
+    console.log(Array.from(grouped.get('Denver')));
     return shape;
 }
