@@ -16,7 +16,7 @@ function Sources(props) {
         
         <tbody>
         { sources.map(s => (
-          <tr>
+          <tr key={s[0]}>
             <td>{ s[0] }</td>
             <td>{ s[1] }</td>
           </tr>

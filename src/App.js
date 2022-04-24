@@ -1,5 +1,5 @@
 import { 
-  useState, useEffect, useCallback,
+  useState, useEffect, useCallback, useRef
 } from 'react';
 
 import Map, { Source, Layer, Popup } from 'react-map-gl';
@@ -21,6 +21,14 @@ function App() {
   const [shapeFile, setShapeFile] = useState(null);
   const [hoverInfo, setHoverInfo] = useState(null);
   const [summary, setSummary] = useState(null);
+
+  const mapRef = useRef();
+
+  const onMapLoad = useCallback(() => {
+    mapRef.current.on('click', () => {
+      console.log(mapRef.current);
+    });
+  }, []);
 
   useEffect(() => {
     function getData() {
@@ -56,6 +64,10 @@ function App() {
   }, []);
   
   const onHover = useCallback(event => {
+    console.log(event);
+    event.originalEvent.stopPropagation();
+    // event.originalEvent.preventDefault();
+    
     const {
       features,
       point: {x, y},
@@ -79,7 +91,7 @@ function App() {
       });
     }
     setHoverInfo(hoveredFeature && {feature: hoveredFeature, x, y});
-    console.log(hoveredFeature.source_summary);
+    // console.log(hoveredFeature.source_summary);
     setSummary(hoveredFeature);
   }, [ lookup ]);
 
@@ -91,6 +103,10 @@ function App() {
   // const data = useMemo(() => {
   //   return allData;
   // }, [ allData ]);
+
+  
+
+  
 
   const fillColor = {
     id: 'colorado',
@@ -132,8 +148,11 @@ function App() {
             mapStyle="mapbox://styles/mapbox/dark-v10"
             mapboxAccessToken="pk.eyJ1IjoiZGF0YXJrYWxsb28iLCJhIjoiY2toOXI3aW5kMDRlZTJ4cWt0MW5kaHg4eCJ9.V4NfOecIoFaErvFv_lfKLg"
             interactiveLayerIds={['colorado']}
-            onMouseMove={ onHover }
-            onMouseLeave={ onLeave }>
+            onLoad={ onMapLoad }
+            // onMouseMove={ onHover }
+            // onMouseLeave={ onLeave }
+            // onClick={ onHover }
+            >
 
             <Source type="geojson" data={shapeFile}>
               <Layer {...fillColor} />
@@ -144,10 +163,10 @@ function App() {
                 longitude={hoverInfo.feature.longitude}
                 latitude={hoverInfo.feature.latitude}
                 offset={[0, -10]}
-                closeButton={ false }
+                closeButton={ true }
+                closeOnClick={ false }
                 className="county-info"
-                dynamicPosition={ false }
-              >
+                onClose={ onLeave }>
                 <h5>{ hoverInfo.feature.properties.NAME }</h5>
                 <p>News sources: { hoverInfo.feature.properties.news_sources }</p>
               </Popup>
