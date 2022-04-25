@@ -95,26 +95,26 @@ const Map = (props) => {
 
           props.passData(feature);
 
-          // if (hoveredStateId && feature.properties.news_sources > 0) {
-          //   resetFeature(hoveredStateId);
-          // }
-          // hoveredStateId = feature.id;
+          if (hoveredStateId && feature.properties.news_sources > 0) {
+            resetFeature(hoveredStateId);
+          }
+          hoveredStateId = feature.id;
 
-          // map.setFeatureState({
-          //   source: 'colorado',
-          //   id: hoveredStateId,
-          // },
-          // {
-          //   hover: true,
-          // });
+          map.setFeatureState({
+            source: 'colorado',
+            id: hoveredStateId,
+          },
+          {
+            hover: true,
+          });
         }
       });
 
       popupRef.current.on('close', () => {
         console.log(hoveredStateId);
-        // if(hoveredStateId) {
-        //   resetFeature(hoveredStateId);
-        // }
+        if(hoveredStateId) {
+          resetFeature(hoveredStateId);
+        }
       });
     });
 
