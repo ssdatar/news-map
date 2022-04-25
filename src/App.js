@@ -15,7 +15,6 @@ import { addData, processSheet, lookupRef } from './utils';
 
 import './App.scss';
 
-
 function App() {
   const [allData, setAllData] = useState(null);
   const [lookup, setLookup] = useState(null);
@@ -56,6 +55,27 @@ function App() {
     getData();
   }, []);
   
+  const updateTable = (f) => {
+    // console.log(f);
+    // console.log(lookup.get(f.properties.NAME));
+
+    if(lookup.get(f.properties.NAME)) {
+      const countySourceSummary = lookup.get(f.properties.NAME);
+      f.properties.source_summary = [];      
+
+      countySourceSummary.forEach((_v, key) => {
+        f.properties.source_summary.push([key, _v.length]);
+      });
+
+      f.properties.source_summary = f.properties.source_summary.sort((a, b) => {
+        return b[1] - a[1];
+      });
+    }
+
+    console.log(f.properties);
+    setSummary(f);
+  };
+
   const onHover = useCallback(event => {
     const {
       features,
@@ -123,19 +143,23 @@ function App() {
     <Container fluid>
       <Row>
         <Col xs={12} md={8} lg={8}>
-          <Map source={shapeFile} fill={ fillColor }>
+          <Map 
+            source={shapeFile} 
+            fill={ fillColor }
+            passData={updateTable}
+          >
             
           </Map>
         </Col>
 
         <Col xs={12} md={4} lg={4}>
-          {/*{summary && (
+          {summary && (
             <div>
               <h5>{ summary.properties.NAME }</h5>
 
-              <Sources county={summary.properties.NAME} sources={summary.source_summary} />
+              <Sources county={summary.properties.NAME} sources={summary.properties.source_summary} />
             </div>
-          )}*/}
+          )}
         </Col>
 
       </Row>

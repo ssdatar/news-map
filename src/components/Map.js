@@ -4,7 +4,7 @@ import Tooltip from './Tooltip';
 import ReactDOM from 'react-dom';
 
 mapboxgl.accessToken =
-  'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
+  'pk.eyJ1IjoiZGF0YXJrYWxsb28iLCJhIjoiY2toOXI3aW5kMDRlZTJ4cWt0MW5kaHg4eCJ9.V4NfOecIoFaErvFv_lfKLg';
 
 const Map = (props) => {
   const mapContainerRef = useRef(null);
@@ -28,67 +28,67 @@ const Map = (props) => {
         data: source,
       });
 
-      // bus routes - line layer
-      // see https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#line
       map.addLayer({
         id: 'colorado',
         type: 'fill',
         source: 'colorado',
         paint: fill.paint,
       });
-    });
 
-    // change cursor to pointer when user hovers over a clickable feature
-    map.on('mouseenter', e => {
-      if (e.features.length) {
-        map.getCanvas().style.cursor = 'pointer';
-      }
-    });
-
-    // reset cursor to default when user is no longer hovering over a clickable feature
-    map.on('mouseleave', () => {
-      map.getCanvas().style.cursor = '';
-    });
-
-    // // add tooltip when users mouse move over a point
-    // map.on('mousemove', e => {
-    //   const features = map.queryRenderedFeatures(e.point);
-    //   if (features.length) {
-    //     const feature = features[0];
-
-    //     // Create tooltip node
-    //     const tooltipNode = document.createElement('div');
-    //     ReactDOM.createRoot(<Tooltip feature={feature} />, tooltipNode);
-
-    //     // Set tooltip on map
-    //     tooltipRef.current
-    //       .setLngLat(e.lngLat)
-    //       .setDOMContent(tooltipNode)
-    //       .addTo(map);
-    //   }
-    // });
-
-    map.on('click', 'colorado', (e) => {
-      const features = map.queryRenderedFeatures(e.point, {
-        layers: ['colorado'],
+      // change cursor to pointer when user hovers over a clickable feature
+      map.on('mouseenter', e => {
+        if (e.features.length) {
+          map.getCanvas().style.cursor = 'pointer';
+        }
       });
-      
-      if (features.length > 0) {
-        const feature = features[0];
+
+      // reset cursor to default when user is no longer hovering over a clickable feature
+      map.on('mouseleave', () => {
+        map.getCanvas().style.cursor = '';
+      });
+
+      // // add tooltip when users mouse move over a point
+      // map.on('mousemove', e => {
+      //   const features = map.queryRenderedFeatures(e.point);
+      //   if (features.length) {
+      //     const feature = features[0];
+
+      //     // Create tooltip node
+      //     const tooltipNode = document.createElement('div');
+      //     ReactDOM.createRoot(<Tooltip feature={feature} />, tooltipNode);
+
+      //     // Set tooltip on map
+      //     tooltipRef.current
+      //       .setLngLat(e.lngLat)
+      //       .setDOMContent(tooltipNode)
+      //       .addTo(map);
+      //   }
+      // });
+
+      map.on('click', 'colorado', (e) => {
+        const features = map.queryRenderedFeatures(e.point, {
+          layers: ['colorado'],
+        });
         
-        // create popup node
-        const popupNode = document.createElement('div');
-        ReactDOM.render(<Tooltip feature={feature} />, popupNode);
-        
-        popupRef.current
-          .setLngLat(e.lngLat)
-          .setDOMContent(popupNode)
-          .addTo(map);
-      }
+        if (features.length > 0) {
+          const feature = features[0];
+          
+          // create popup node
+          const popupNode = document.createElement('div');
+          ReactDOM.render(<Tooltip feature={feature} />, popupNode);
+          
+          popupRef.current
+            .setLngLat(e.lngLat)
+            .setDOMContent(popupNode)
+            .addTo(map);
+
+          props.passData(feature);
+        }
+      });
     });
 
     // Clean up on unmount
-    return () => map.remove();
+    // return () => map.remove();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
