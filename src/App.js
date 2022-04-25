@@ -22,14 +22,6 @@ function App() {
   const [hoverInfo, setHoverInfo] = useState(null);
   const [summary, setSummary] = useState(null);
 
-  const mapRef = useRef();
-
-  const onMapLoad = useCallback(() => {
-    mapRef.current.on('click', () => {
-      console.log(mapRef.current);
-    });
-  }, []);
-
   useEffect(() => {
     function getData() {
       const mainSheet = axios({
@@ -63,10 +55,9 @@ function App() {
     getData();
   }, []);
   
-  const onHover = useCallback(event => {
-    console.log(event);
+  const showInfo = useCallback(event => {
+    // event.preventDefault();
     event.originalEvent.stopPropagation();
-    // event.originalEvent.preventDefault();
     
     const {
       features,
@@ -91,22 +82,17 @@ function App() {
       });
     }
     setHoverInfo(hoveredFeature && {feature: hoveredFeature, x, y});
-    // console.log(hoveredFeature.source_summary);
     setSummary(hoveredFeature);
   }, [ lookup ]);
 
   const onLeave = () => { 
     setHoverInfo(null);
-    setSummary(null);
+    // setSummary(null);
   };
 
   // const data = useMemo(() => {
   //   return allData;
   // }, [ allData ]);
-
-  
-
-  
 
   const fillColor = {
     id: 'colorado',
@@ -148,10 +134,9 @@ function App() {
             mapStyle="mapbox://styles/mapbox/dark-v10"
             mapboxAccessToken="pk.eyJ1IjoiZGF0YXJrYWxsb28iLCJhIjoiY2toOXI3aW5kMDRlZTJ4cWt0MW5kaHg4eCJ9.V4NfOecIoFaErvFv_lfKLg"
             interactiveLayerIds={['colorado']}
-            onLoad={ onMapLoad }
-            // onMouseMove={ onHover }
+            // onMouseMove={ showInfo }
             // onMouseLeave={ onLeave }
-            // onClick={ onHover }
+            onClick={ showInfo }
             >
 
             <Source type="geojson" data={shapeFile}>
@@ -166,7 +151,8 @@ function App() {
                 closeButton={ true }
                 closeOnClick={ false }
                 className="county-info"
-                onClose={ onLeave }>
+                onClose={ () => setSummary(null) }
+                >
                 <h5>{ hoverInfo.feature.properties.NAME }</h5>
                 <p>News sources: { hoverInfo.feature.properties.news_sources }</p>
               </Popup>

@@ -1,7 +1,6 @@
 import Table from 'react-bootstrap/Table';
 
 function Sources(props) {
-  console.log(props);
   if(props.sources.length) {
     const { sources } = props;
 
