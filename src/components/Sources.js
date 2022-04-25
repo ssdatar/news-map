@@ -15,8 +15,8 @@ function Sources(props) {
         </thead>
         
         <tbody>
-        { sources.map(s => (
-          <tr>
+        { sources.map((s, i) => (
+          <tr key={i}>
             <td>{ s[0] }</td>
             <td>{ s[1] }</td>
           </tr>

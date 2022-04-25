@@ -11,7 +11,7 @@ const Map = (props) => {
   const popupRef = useRef(new mapboxgl.Popup({ offset: 15 }));
   const { source, fill } = props;
 
-  console.log(props);
+  // console.log(props);
 
   // Initialize map when component mounts
   useEffect(() => {
@@ -23,6 +23,7 @@ const Map = (props) => {
     });
 
     map.on('load', () => {
+      console.log(source);
       map.addSource('colorado', {
         type: 'geojson',
         data: source,

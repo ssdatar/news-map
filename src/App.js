@@ -8,6 +8,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Sources from './components/Sources';
+import Table from 'react-bootstrap/Table';
 // import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import { csvParse } from 'd3-dsv';
@@ -21,6 +22,7 @@ function App() {
   const [shapeFile, setShapeFile] = useState(null);
   const [hoverInfo, setHoverInfo] = useState(null);
   const [summary, setSummary] = useState(null);
+  const [details, setDetails] = useState(null);
 
   useEffect(() => {
     function getData() {
@@ -57,7 +59,7 @@ function App() {
   
   const updateTable = (f) => {
     // console.log(f);
-    // console.log(lookup.get(f.properties.NAME));
+    // console.log(allData);
 
     if(lookup.get(f.properties.NAME)) {
       const countySourceSummary = lookup.get(f.properties.NAME);
@@ -71,9 +73,9 @@ function App() {
         return b[1] - a[1];
       });
     }
-
-    console.log(f.properties);
     setSummary(f);
+    console.log(allData.filter(d => d.COUNTY === f.properties.NAME));
+    setDetails(allData.filter(d => d.COUNTY === f.properties.NAME));
   };
 
   const onHover = useCallback(event => {
@@ -156,12 +158,36 @@ function App() {
           {summary && (
             <div>
               <h5>{ summary.properties.NAME }</h5>
-
               <Sources county={summary.properties.NAME} sources={summary.properties.source_summary} />
             </div>
           )}
         </Col>
+      </Row>
 
+      <Row>
+        <Col xs={12} sm={8}>
+          {details && 
+            (<Table className="details" striped bordered hover responsive>
+              <thead>
+                <tr>
+                  <th>Outlet</th>
+                  <th>County</th>
+                  <th>Sector</th>
+                </tr>
+              </thead>
+              
+              <tbody>
+              { details.map((s, i) => (
+                <tr key={i}>
+                  <td><a href={s['WEB']}>{ s['OUTLET'] }</a></td>
+                  <td>{ s['COUNTY'] }</td>
+                  <td>{ s['SECTOR'] }</td>
+                </tr>
+              ))}
+              </tbody>
+            </Table>)
+          }
+        </Col>
       </Row>
     </Container>
   );
