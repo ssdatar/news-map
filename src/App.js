@@ -2,7 +2,8 @@ import {
   useState, useEffect, useCallback,
 } from 'react';
 
-import Map, { Source, Layer, Popup } from 'react-map-gl';
+// import Map, { Source, Layer, Popup } from 'react-map-gl';
+import Map from './components/Map';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -122,47 +123,19 @@ function App() {
     <Container fluid>
       <Row>
         <Col xs={12} md={8} lg={8}>
-          <Map
-            initialViewState={{
-              longitude: -105.358887,
-              latitude: 39.113014,
-              zoom: 6
-            }}
-            style={{width: '100%', height: 450}}
-            mapStyle="mapbox://styles/mapbox/dark-v10"
-            mapboxAccessToken="pk.eyJ1IjoiZGF0YXJrYWxsb28iLCJhIjoiY2toOXI3aW5kMDRlZTJ4cWt0MW5kaHg4eCJ9.V4NfOecIoFaErvFv_lfKLg"
-            interactiveLayerIds={['colorado']}
-            onMouseMove={ onHover }
-            onMouseLeave={ onLeave }>
-
-            <Source type="geojson" data={shapeFile}>
-              <Layer {...fillColor} />
-            </Source>
-
-            {hoverInfo && (
-              <Popup
-                longitude={hoverInfo.feature.longitude}
-                latitude={hoverInfo.feature.latitude}
-                offset={[0, -10]}
-                closeButton={ false }
-                className="county-info"
-                dynamicPosition={ false }
-              >
-                <h5>{ hoverInfo.feature.properties.NAME }</h5>
-                <p>News sources: { hoverInfo.feature.properties.news_sources }</p>
-              </Popup>
-            )}
+          <Map source={shapeFile} fill={ fillColor }>
+            
           </Map>
         </Col>
 
         <Col xs={12} md={4} lg={4}>
-          {summary && (
+          {/*{summary && (
             <div>
               <h5>{ summary.properties.NAME }</h5>
 
               <Sources county={summary.properties.NAME} sources={summary.source_summary} />
             </div>
-          )}
+          )}*/}
         </Col>
 
       </Row>
