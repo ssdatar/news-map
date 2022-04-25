@@ -56,7 +56,7 @@ function App() {
 
     getData();
   }, []);
-  
+
   const updateTable = (f) => {
     // console.log(f);
     // console.log(allData);
@@ -141,56 +141,60 @@ function App() {
     }
   };
 
-  return (
-    <Container fluid>
-      <Row>
-        <Col xs={12} md={8} lg={8}>
-          <Map 
-            source={shapeFile} 
-            fill={ fillColor }
-            passData={updateTable}
-          >
-            
-          </Map>
-        </Col>
-
-        <Col xs={12} md={4} lg={4}>
-          {summary && (
-            <div>
-              <h5>{ summary.properties.NAME }</h5>
-              <Sources county={summary.properties.NAME} sources={summary.properties.source_summary} />
-            </div>
-          )}
-        </Col>
-      </Row>
-
-      <Row>
-        <Col xs={12} sm={8}>
-          {details && 
-            (<Table className="details" striped bordered hover responsive>
-              <thead>
-                <tr>
-                  <th>Outlet</th>
-                  <th>County</th>
-                  <th>Sector</th>
-                </tr>
-              </thead>
+  if (shapeFile) {
+    return (
+      <Container fluid>
+        <Row>
+          <Col xs={12} md={8} lg={8}>
+            <Map 
+              source={shapeFile} 
+              fill={ fillColor }
+              passData={updateTable}
+            >
               
-              <tbody>
-              { details.map((s, i) => (
-                <tr key={i}>
-                  <td><a href={s['WEB']}>{ s['OUTLET'] }</a></td>
-                  <td>{ s['COUNTY'] }</td>
-                  <td>{ s['SECTOR'] }</td>
-                </tr>
-              ))}
-              </tbody>
-            </Table>)
-          }
-        </Col>
-      </Row>
-    </Container>
-  );
+            </Map>
+          </Col>
+
+          <Col xs={12} md={4} lg={4}>
+            {summary && (
+              <div>
+                <h5>{ summary.properties.NAME }</h5>
+                <Sources county={summary.properties.NAME} sources={summary.properties.source_summary} />
+              </div>
+            )}
+          </Col>
+        </Row>
+
+        <Row>
+          <Col xs={12} sm={8}>
+            {details && 
+              (<Table className="details" striped bordered hover responsive>
+                <thead>
+                  <tr>
+                    <th>Outlet</th>
+                    <th>County</th>
+                    <th>Sector</th>
+                  </tr>
+                </thead>
+                
+                <tbody>
+                { details.map((s, i) => (
+                  <tr key={i}>
+                    <td><a href={s['WEB']}>{ s['OUTLET'] }</a></td>
+                    <td>{ s['COUNTY'] }</td>
+                    <td>{ s['SECTOR'] }</td>
+                  </tr>
+                ))}
+                </tbody>
+              </Table>)
+            }
+          </Col>
+        </Row>
+      </Container>
+    );
+  } else {
+    return null;
+  }
 }
 
 export default App;
