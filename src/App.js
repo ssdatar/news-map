@@ -2,12 +2,14 @@ import {
   useState, useEffect, useCallback,
 } from 'react';
 
-// import Map, { Source, Layer, Popup } from 'react-map-gl';
 import Map from './components/Map';
+import Sources from './components/Sources';
+import Details from './components/Details';
+
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Sources from './components/Sources';
+
 import Table from 'react-bootstrap/Table';
 // import Button from 'react-bootstrap/Button';
 import axios from 'axios';
@@ -58,9 +60,6 @@ function App() {
   }, []);
 
   const updateTable = (f) => {
-    // console.log(f);
-    // console.log(allData);
-
     if(lookup.get(f.properties.NAME)) {
       const countySourceSummary = lookup.get(f.properties.NAME);
       f.properties.source_summary = [];      
@@ -74,8 +73,14 @@ function App() {
       });
     }
     setSummary(f);
-    console.log(allData.filter(d => d.COUNTY === f.properties.NAME));
-    setDetails(allData.filter(d => d.COUNTY === f.properties.NAME));
+    
+    const sourceDetails = allData.filter(d => d.COUNTY === f.properties.NAME);
+    
+    if (sourceDetails.length) {
+      setDetails(sourceDetails);
+    } else {
+      setDetails(null);
+    }
   };
 
   const onHover = useCallback(event => {
@@ -168,25 +173,7 @@ function App() {
         <Row>
           <Col xs={12} sm={8}>
             {details && 
-              (<Table className="details" striped bordered hover responsive>
-                <thead>
-                  <tr>
-                    <th>Outlet</th>
-                    <th>County</th>
-                    <th>Sector</th>
-                  </tr>
-                </thead>
-                
-                <tbody>
-                { details.map((s, i) => (
-                  <tr key={i}>
-                    <td><a href={s['WEB']}>{ s['OUTLET'] }</a></td>
-                    <td>{ s['COUNTY'] }</td>
-                    <td>{ s['SECTOR'] }</td>
-                  </tr>
-                ))}
-                </tbody>
-              </Table>)
+              (<Details details={ details }/>)
             }
           </Col>
         </Row>

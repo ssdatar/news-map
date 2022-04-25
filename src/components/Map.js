@@ -82,6 +82,7 @@ const Map = (props) => {
         
         if (features.length > 0) {
           const feature = features[0];
+          console.log(feature)
           
           // create popup node
           const popupNode = document.createElement('div');
@@ -94,23 +95,26 @@ const Map = (props) => {
 
           props.passData(feature);
 
-          if (hoveredStateId) {
-            resetFeature(hoveredStateId)
-          }
-          hoveredStateId = feature.id;
+          // if (hoveredStateId && feature.properties.news_sources > 0) {
+          //   resetFeature(hoveredStateId);
+          // }
+          // hoveredStateId = feature.id;
 
-          map.setFeatureState({
-            source: 'colorado',
-            id: hoveredStateId,
-          },
-          {
-            hover: true,
-          });
+          // map.setFeatureState({
+          //   source: 'colorado',
+          //   id: hoveredStateId,
+          // },
+          // {
+          //   hover: true,
+          // });
         }
       });
 
       popupRef.current.on('close', () => {
-        resetFeature(hoveredStateId);
+        console.log(hoveredStateId);
+        // if(hoveredStateId) {
+        //   resetFeature(hoveredStateId);
+        // }
       });
     });
 

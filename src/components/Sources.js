@@ -1,10 +1,8 @@
 import Table from 'react-bootstrap/Table';
 
 function Sources(props) {
-  console.log(props);
-  if(props.sources.length) {
+  if (props.sources !== undefined) {
     const { sources } = props;
-
     return (
       <Table striped bordered hover responsive>
         <thead>
