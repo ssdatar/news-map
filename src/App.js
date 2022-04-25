@@ -102,7 +102,7 @@ function App() {
       });
     }
     setHoverInfo(hoveredFeature && {feature: hoveredFeature, x, y});
-    console.log(hoveredFeature.source_summary);
+    // console.log(hoveredFeature.source_summary);
     setSummary(hoveredFeature);
   }, [ lookup ]);
 

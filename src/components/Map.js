@@ -10,6 +10,7 @@ const Map = (props) => {
   const mapContainerRef = useRef(null);
   const popupRef = useRef(new mapboxgl.Popup({ offset: 15 }));
   const { source, fill } = props;
+  let hoveredStateId = null;
 
   // console.log(props);
 
@@ -22,11 +23,19 @@ const Map = (props) => {
       zoom: 6
     });
 
+    const resetFeature = (id) => {
+      map.removeFeatureState({
+        source: 'colorado',
+        id: id
+      });
+    };
+
     map.on('load', () => {
-      console.log(source);
       map.addSource('colorado', {
         type: 'geojson',
         data: source,
+        promoteId: 'AFFGEOID',
+        // generateId: true,
       });
 
       map.addLayer({
@@ -84,7 +93,24 @@ const Map = (props) => {
             .addTo(map);
 
           props.passData(feature);
+
+          if (hoveredStateId) {
+            resetFeature(hoveredStateId)
+          }
+          hoveredStateId = feature.id;
+
+          map.setFeatureState({
+            source: 'colorado',
+            id: hoveredStateId,
+          },
+          {
+            hover: true,
+          });
         }
+      });
+
+      popupRef.current.on('close', () => {
+        resetFeature(hoveredStateId);
       });
     });
 
