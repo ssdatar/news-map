@@ -1,10 +1,8 @@
 import Table from 'react-bootstrap/Table';
 
 function Sources(props) {
-  console.log(props);
-  if(props.sources.length) {
+  if (props.sources !== undefined) {
     const { sources } = props;
-
     return (
       <Table striped bordered hover responsive>
         <thead>
@@ -15,8 +13,8 @@ function Sources(props) {
         </thead>
         
         <tbody>
-        { sources.map(s => (
-          <tr>
+        { sources.map((s, i) => (
+          <tr key={i}>
             <td>{ s[0] }</td>
             <td>{ s[1] }</td>
           </tr>

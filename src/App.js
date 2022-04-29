@@ -2,11 +2,15 @@ import {
   useState, useEffect, useCallback,
 } from 'react';
 
-import Map, { Source, Layer, Popup } from 'react-map-gl';
+import Map from './components/Map';
+import Sources from './components/Sources';
+import Details from './components/Details';
+
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Sources from './components/Sources';
+
+import Table from 'react-bootstrap/Table';
 // import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import { csvParse } from 'd3-dsv';
@@ -14,13 +18,13 @@ import { addData, processSheet, lookupRef } from './utils';
 
 import './App.scss';
 
-
 function App() {
   const [allData, setAllData] = useState(null);
   const [lookup, setLookup] = useState(null);
   const [shapeFile, setShapeFile] = useState(null);
   const [hoverInfo, setHoverInfo] = useState(null);
   const [summary, setSummary] = useState(null);
+  const [details, setDetails] = useState(null);
 
   useEffect(() => {
     function getData() {
@@ -54,7 +58,31 @@ function App() {
 
     getData();
   }, []);
-  
+
+  const updateTable = (f) => {
+    if(lookup.get(f.properties.NAME)) {
+      const countySourceSummary = lookup.get(f.properties.NAME);
+      f.properties.source_summary = [];      
+
+      countySourceSummary.forEach((_v, key) => {
+        f.properties.source_summary.push([key, _v.length]);
+      });
+
+      f.properties.source_summary = f.properties.source_summary.sort((a, b) => {
+        return b[1] - a[1];
+      });
+    }
+    setSummary(f);
+    
+    const sourceDetails = allData.filter(d => d.COUNTY === f.properties.NAME);
+    
+    if (sourceDetails.length) {
+      setDetails(sourceDetails);
+    } else {
+      setDetails(null);
+    }
+  };
+
   const onHover = useCallback(event => {
     const {
       features,
@@ -79,7 +107,7 @@ function App() {
       });
     }
     setHoverInfo(hoveredFeature && {feature: hoveredFeature, x, y});
-    console.log(hoveredFeature.source_summary);
+    // console.log(hoveredFeature.source_summary);
     setSummary(hoveredFeature);
   }, [ lookup ]);
 
@@ -118,56 +146,42 @@ function App() {
     }
   };
 
-  return (
-    <Container fluid>
-      <Row>
-        <Col xs={12} md={8} lg={8}>
-          <Map
-            initialViewState={{
-              longitude: -105.358887,
-              latitude: 39.113014,
-              zoom: 6
-            }}
-            style={{width: '100%', height: 450}}
-            mapStyle="mapbox://styles/mapbox/dark-v10"
-            mapboxAccessToken="pk.eyJ1IjoiZGF0YXJrYWxsb28iLCJhIjoiY2toOXI3aW5kMDRlZTJ4cWt0MW5kaHg4eCJ9.V4NfOecIoFaErvFv_lfKLg"
-            interactiveLayerIds={['colorado']}
-            onMouseMove={ onHover }
-            onMouseLeave={ onLeave }>
+  if (shapeFile) {
+    return (
+      <Container fluid>
+        <Row>
+          <Col xs={12} md={8} lg={8}>
+            <Map 
+              source={shapeFile} 
+              fill={ fillColor }
+              passData={updateTable}
+            >
+              
+            </Map>
+          </Col>
 
-            <Source type="geojson" data={shapeFile}>
-              <Layer {...fillColor} />
-            </Source>
-
-            {hoverInfo && (
-              <Popup
-                longitude={hoverInfo.feature.longitude}
-                latitude={hoverInfo.feature.latitude}
-                offset={[0, -10]}
-                closeButton={ false }
-                className="county-info"
-                dynamicPosition={ false }
-              >
-                <h5>{ hoverInfo.feature.properties.NAME }</h5>
-                <p>News sources: { hoverInfo.feature.properties.news_sources }</p>
-              </Popup>
+          <Col xs={12} md={4} lg={4}>
+            {summary && (
+              <div>
+                <h5>{ summary.properties.NAME }</h5>
+                <Sources county={summary.properties.NAME} sources={summary.properties.source_summary} />
+              </div>
             )}
-          </Map>
-        </Col>
+          </Col>
+        </Row>
 
-        <Col xs={12} md={4} lg={4}>
-          {summary && (
-            <div>
-              <h5>{ summary.properties.NAME }</h5>
-
-              <Sources county={summary.properties.NAME} sources={summary.source_summary} />
-            </div>
-          )}
-        </Col>
-
-      </Row>
-    </Container>
-  );
+        <Row>
+          <Col xs={12} sm={8}>
+            {details && 
+              (<Details details={ details }/>)
+            }
+          </Col>
+        </Row>
+      </Container>
+    );
+  } else {
+    return null;
+  }
 }
 
 export default App;
