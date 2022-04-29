@@ -13,6 +13,7 @@
     "d3-fetch": "^3.0.1",
     "d3-queue": "^3.0.7",
     "d3-request": "^1.0.6",
+    "googleapis": "^100.0.0",
     "mapbox-gl": "^2.8.1",
     "react": "^18.0.0",
     "react-bootstrap": "^2.2.3",
@@ -45,5 +46,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@newswire/sheet-to-data": "^1.0.0"
   }
 }
