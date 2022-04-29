@@ -27,6 +27,9 @@ jobs:
         shell: bash
         run: echo -n "${{ secrets.SHEET_KEY }}" | base64 --decode > key.json
 
+      - name: Install 
+        run: npm install
+
       # Runs a single command using the runners shell
       - name: Get spreadsheet data
         run: node ./pullData.js
