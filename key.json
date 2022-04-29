@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "colab-news-map",
+  "private_key_id": "0596346eaaa77fb7452568e9d6e30d3399c894a5",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCeCfCMVhQy7gqM\ny/Ia7zlSwvUrH3odHNkNEWvS73CLYoYSyKZ0fu2xWPvTLyUr30ODGlQn5jV5dLT6\n7YXmLNG5lr3BX60Y/+gYqQxW13cKY1jTbswfTexS9Cit+7zbrqUvXJ3nRACwEHIw\nSHYKsen427lKS+Lm25mo7ZAWP/cwZvdemZbn3RN61B8RMEJtHsGp85qVeqMoWyxv\nOIWlhZS7dxDZU2C5wrRqHWtspF85ZHZgokjupkUAMYAm/DpCXgSdmCGcOQi2ep3O\nPFS/Y8XOcKDC9bVYJOwPgWB50nA6AHrtZBhh9GO5aCk9xs6W5bhbSxp3mEc1Rm7Q\n4OAK/ufPAgMBAAECggEANruIhIG3QyAvpS1orq1U8/WzBPlEyFpaTW1QI2BrYMqB\nVnYJN+VRmo8Pv8bfH7+V2QzAQoU21dZ2a0Thj6LMC3NKSnNBNpxCHHBHZrf+cSmQ\n9MC1js3k36HRiNfbQ1XLvYhc42AowNEhStl9kBynxFkMZc+8SGmbYObNdPc4O5mR\nzvqtjVGuhl9tay7XviVGBgLaGYIy+BjHoFtqKThsJPStaYyHA+VGblZILruZGdAx\nTmoAbvleta2Ows7r/Fj8NQjPm81QbKssf86vj2V9G6TTcm27x0B8a649NtCAIGBl\nzak1LG/3GGML899fGmXrnnid1RXX18cds5zuQQpc8QKBgQDWOB37folylrMGLdea\nUXDzEPnbyYOVu/8JGMgZgIMLSwWk/xYpjwJLPokY48HeYQkPraOao0qwUbL2QAs+\nvOYi2GdA0HayzEOngiSanABEU5r5tpamWI5eYUBQupm9iWQ2A/k3LrMHhvaW8yzW\npITN1L4AI4H8RdAF4p8RYvXRtwKBgQC83MH1qoz2Jg5De2g73QvcY3sGMz5jCfyy\ntCrY+uBNCSm9K/TSAw60xEFniTylqqDpld5ydZx2F6VG9Py/tKYV+CkfRloJMfcQ\nhWv/9Ffk25kbD73hBncfW9HRVAdjBCjWbt7rjvDg2H3oKNb0WfQeU2MKObKksrm3\nuqA21Gw6qQKBgQDUi69r9hvoHxAXxGpUihPYh/JxGVs+uN4OJ5F6hCEBlnlOQW66\n41LyV2Tt1iVoQL0d2jom13fmw9keLWM653AsCK1CCNSNCNDjpeQtpzU4lf+BXqHR\nALKZgEKxFsQt4+ETGxQtpV8qy8Vk9nh5q5i9JSUzvAdfx+Djxfvv41FltwKBgH6m\nmBeT2NXU7WnJnzvN339a4wxkXujxsJlygu1hR/vBMlFe4d3YGQuWNLom6Rm71A7w\n5uzg/ByhfL+Z2MkCbwJ6mbEUb5qM/D8DCkrp4+tgbEsegloeCNJps8npzM5U4sHy\nNeHHyLcv1zdR89yHWlLf3qHj0W3rQOn56Cj8yNuJAoGABizWZZJjw+f+P0ZQ7DOw\ncvste2z/+BwTHRc3hvnSwf+jYittyNu6wY4ghT8UX511nKlK1ATSnTELVlDs3Nbn\nUP6fwSs74S7Vm4XMlOOqKEwy30w1bogSGp7tEZArJvD3Bkk7lgN0/NKsYLkKvCQ2\n8thdPaQ36Y92IIh07uv+PA4=\n-----END PRIVATE KEY-----\n",
+  "client_email": "colab-news-map@colab-news-map.iam.gserviceaccount.com",
+  "client_id": "117775209975138942887",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/colab-news-map%40colab-news-map.iam.gserviceaccount.com"
+}
