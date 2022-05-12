@@ -14,7 +14,7 @@ import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import axios from 'axios';
 import { csvParse } from 'd3-dsv';
-import { addData, processSheet, lookupRef } from './utils';
+import { addData, processSheet, lookupRef, otherSheet } from './utils';
 
 import './App.scss';
 
@@ -22,9 +22,10 @@ function App() {
   const [allData, setAllData] = useState(null);
   const [lookup, setLookup] = useState(null);
   const [shapeFile, setShapeFile] = useState(null);
-  const [hoverInfo, setHoverInfo] = useState(null);
+  const [nonTrad, setNonTrad] = useState(null);
   const [summary, setSummary] = useState(null);
   const [details, setDetails] = useState(null);
+  const [community, setCommunity] = useState(null);
 
   useEffect(() => {
     function getData() {
@@ -35,7 +36,7 @@ function App() {
         });
 
       const nonTraditional = axios({
-          url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ3OCcVgY7Sy8GBRUlrsLWJkfJnEtT5L7IqxNNRon1_Pw3keeVbNfs1h3QUFcFd9jz9cIfoIXg0MTn1/pub?gid=1853710081&single=true&output=csv', 
+          url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGQJ9V4Tz9pw4AY32VzE-PpMz7zTfnAUkXD6OQM5koNnMU835n1gJOdNeLD8TPgtJtP8KE5Q7nlvgx/pub?output=csv', 
           method: 'GET',
           responseType: 'text',
         });
@@ -46,11 +47,13 @@ function App() {
         .then(axios.spread((...responses) => {
           const parsedMain = processSheet(csvParse(responses[0].data));
           const shapeData = addData(responses[2].data, parsedMain);
+          const processedNonTrad = otherSheet(csvParse(responses[1].data));
           const initDetails = parsedMain.filter(d => d.STATEWIDE === 'x');
           
           setAllData(parsedMain);
           setLookup(lookupRef(parsedMain));
           setShapeFile(shapeData);
+          setNonTrad(processedNonTrad);
           setDetails(initDetails);
         }))
         .catch(errors => {
@@ -77,11 +80,14 @@ function App() {
     setSummary(f);
     
     const sourceDetails = allData.filter(d => d.COUNTY === f.properties.NAME);
+    const communityDetails = nonTrad.filter(d => d.county === f.properties.NAME);
     
     if (sourceDetails.length) {
       setDetails(sourceDetails);
+      setCommunity(communityDetails);
     } else {
       setDetails(null);
+      setCommunity(null);
     }
   };
 
@@ -139,6 +145,8 @@ function App() {
           </Col>
         </Row>
 
+        <div className="spacer"></div>
+
         <Row>
           <Col>
             <Button onClick={e => buttonHandler('STATEWIDE') } variant="outline-dark">Statewide outlets</Button>
@@ -146,10 +154,41 @@ function App() {
           </Col>
         </Row>
 
+        <div className="spacer"></div>
+
         <Row>
-          <Col xs={12} sm={8}>
+          <Col xs={12} sm={6}>
             {details && 
-              (<Details details={ details }/>)
+              (<Details details={ details } header='Statewide news outlets' />)
+            }
+          </Col>
+
+          <Col xs={12} sm={6}>
+            {community && 
+              (<div>
+                <h4>{ 'Community news outlets' }</h4>
+                <Table className="details" striped hover responsive>
+                  <thead>
+                    <tr>
+                      <th>Outlet</th>
+                      <th>County</th>
+                      <th>Type</th>
+                      <th>Mission</th>
+                    </tr>
+                  </thead>
+                  
+                  <tbody>
+                  { community.map((s, i) => (
+                    <tr key={i}>
+                      <td><a href={s['link']}>{ s['name'] }</a></td>
+                      <td>{ s['county'] }</td>
+                      <td>{ s['type'] }</td>
+                      <td>{ s['mission'] }</td>
+                    </tr>
+                  ))}
+                  </tbody>
+                </Table>
+              </div>)
             }
           </Col>
         </Row>

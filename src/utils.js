@@ -44,3 +44,18 @@ export function addData(shape, data) {
 export function lookupRef(data) {
   return group(data, d => d.COUNTY, d => d.SECTOR);
 }
+
+export function otherSheet(insheet) {
+  const answer = [];
+  const keys = Object.keys(insheet[0]).slice(2);
+  const outKeys = ['name', 'link', 'county', 'owner', 'mission', 'type', 'other_info'];
+
+  insheet.forEach(row => {
+    let dict = {};
+    keys.forEach((k, i) => {
+      dict[outKeys[i]] = row[k];
+    })
+    answer.push(dict);
+  });
+  return answer;
+}

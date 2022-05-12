@@ -2,10 +2,11 @@ import Table from 'react-bootstrap/Table';
 
 function Details(props) {
   if (props.details.length) {
-    const { details } = props;
+    const { details, header } = props;
     
     return (
       <div>
+        <h4>{ header }</h4>
         <Table className="details" striped hover responsive>
           <thead>
             <tr>
