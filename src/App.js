@@ -26,6 +26,7 @@ function App() {
   const [summary, setSummary] = useState(null);
   const [details, setDetails] = useState(null);
   const [community, setCommunity] = useState(null);
+  const [header, setHeader] = useState(null);
 
   useEffect(() => {
     function getData() {
@@ -55,6 +56,7 @@ function App() {
           setShapeFile(shapeData);
           setNonTrad(processedNonTrad);
           setDetails(initDetails);
+          setHeader('Statewide news outlets');
         }))
         .catch(errors => {
           console.log(errors);
@@ -85,15 +87,18 @@ function App() {
     if (sourceDetails.length) {
       setDetails(sourceDetails);
       setCommunity(communityDetails);
+      setHeader(`Mainstream news sources in ${f.properties.NAME} county`);
     } else {
       setDetails(null);
       setCommunity(null);
+      setHeader(null);
     }
   };
 
   const buttonHandler = (key) => {
     const btnData = allData.filter(d => d[key] === 'x');
     setDetails(btnData);
+    setHeader(key);
   }
 
   const fillColor = {
@@ -159,7 +164,7 @@ function App() {
         <Row>
           <Col xs={12} sm={6}>
             {details && 
-              (<Details details={ details } header='Statewide news outlets' />)
+              (<Details details={ details } header={ header } />)
             }
           </Col>
 
