@@ -9,9 +9,9 @@ import Details from './components/Details';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
 
 import Table from 'react-bootstrap/Table';
-// import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import { csvParse } from 'd3-dsv';
 import { addData, processSheet, lookupRef } from './utils';
@@ -46,10 +46,12 @@ function App() {
         .then(axios.spread((...responses) => {
           const parsedMain = processSheet(csvParse(responses[0].data));
           const shapeData = addData(responses[2].data, parsedMain);
+          const initDetails = parsedMain.filter(d => d.STATEWIDE === 'x');
           
           setAllData(parsedMain);
           setLookup(lookupRef(parsedMain));
           setShapeFile(shapeData);
+          setDetails(initDetails);
         }))
         .catch(errors => {
           console.log(errors);
@@ -83,42 +85,10 @@ function App() {
     }
   };
 
-  const onHover = useCallback(event => {
-    const {
-      features,
-      point: {x, y},
-    } = event;
-    
-    const hoveredFeature = features && features[0];
-    
-    hoveredFeature.longitude = event.lngLat.lng;
-    hoveredFeature.latitude = event.lngLat.lat;
-    hoveredFeature.source_summary = [];
-
-    if(lookup.get(hoveredFeature.properties.NAME)) {
-      const countySourceSummary = lookup.get(hoveredFeature.properties.NAME);
-      
-      countySourceSummary.forEach((_v, key) => {
-        hoveredFeature.source_summary.push([key, _v.length]);
-      });
-
-      hoveredFeature.source_summary = hoveredFeature.source_summary.sort((a, b) => {
-        return b[1] - a[1];
-      });
-    }
-    setHoverInfo(hoveredFeature && {feature: hoveredFeature, x, y});
-    // console.log(hoveredFeature.source_summary);
-    setSummary(hoveredFeature);
-  }, [ lookup ]);
-
-  const onLeave = () => { 
-    setHoverInfo(null);
-    setSummary(null);
-  };
-
-  // const data = useMemo(() => {
-  //   return allData;
-  // }, [ allData ]);
+  const buttonHandler = (key) => {
+    const btnData = allData.filter(d => d[key] === 'x');
+    setDetails(btnData);
+  }
 
   const fillColor = {
     id: 'colorado',
@@ -156,7 +126,6 @@ function App() {
               fill={ fillColor }
               passData={updateTable}
             >
-              
             </Map>
           </Col>
 
@@ -167,6 +136,13 @@ function App() {
                 <Sources county={summary.properties.NAME} sources={summary.properties.source_summary} />
               </div>
             )}
+          </Col>
+        </Row>
+
+        <Row>
+          <Col>
+            <Button onClick={e => buttonHandler('STATEWIDE') } variant="outline-dark">Statewide outlets</Button>
+            <Button onClick= {e => buttonHandler('COLab') } variant="outline-dark">COLab outlets</Button>
           </Col>
         </Row>
 
