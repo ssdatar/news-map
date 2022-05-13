@@ -26,7 +26,13 @@ function Details(props) {
     return (
       <div>
         <h4 className='mainstream'>{ header }</h4>
-        <DataTable className='rdt_Table' columns={columns} data={data} pagination />
+        <DataTable 
+          className='rdt_Table' 
+          columns={columns} 
+          data={data} pagination 
+          paginationPerPage={5}
+          paginationRowsPerPageOptions = {[5, 10, 15, 20, 25, 30]}
+        />
       </div>
     );
     

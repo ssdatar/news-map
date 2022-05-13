@@ -40,7 +40,17 @@ function Community(props) {
     return (
       <div>
         <h4>{ header }</h4>
-        <DataTable className='rdt_Table' columns={columns} data={data} customStyles={customStyles} pagination highlightOnHover expandableRows expandableRowsComponent={ExpandedComponent}/>
+        <DataTable 
+          className='rdt_Table' 
+          columns={columns} 
+          data={data} 
+          customStyles={customStyles} 
+          pagination paginationPerPage={5}
+          paginationRowsPerPageOptions = {[5, 10, 15, 20, 25, 30]}
+          highlightOnHover 
+          expandableRows 
+          expandableRowsComponent={ ExpandedComponent }
+        />
       </div>
     );
   } else {
