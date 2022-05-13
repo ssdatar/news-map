@@ -55,8 +55,8 @@ function App() {
           setLookup(lookupRef(parsedMain));
           setShapeFile(shapeData);
           setNonTrad(processedNonTrad);
-          setDetails(initDetails);
-          setHeader('Statewide news outlets');
+          setDetails({ header: 'Statewide news outlets', data: initDetails});
+          // setHeader('Statewide news outlets');
         }))
         .catch(errors => {
           console.log(errors);
@@ -85,13 +85,15 @@ function App() {
     const communityDetails = nonTrad.filter(d => d.county === f.properties.NAME);
     
     if (sourceDetails.length) {
-      setDetails(sourceDetails);
-      setCommunity(communityDetails);
-      setHeader(`Mainstream news sources in ${f.properties.NAME} county`);
+      setDetails({ header: `Mainstream news sources in ${f.properties.NAME} county`, data: sourceDetails});
     } else {
       setDetails(null);
+    }
+
+    if (communityDetails.length) {
+      setCommunity(communityDetails);
+    } else {
       setCommunity(null);
-      setHeader(null);
     }
   };
 
@@ -104,8 +106,8 @@ function App() {
 
     console.log(e);
     const btnData = allData.filter(d => d[key] === 'x');
-    setDetails(btnData);
-    setHeader(hedText[key]);
+    setDetails({ header: hedText[key], data: btnData});
+    // setHeader(hedText[key]);
   }
 
   const fillColor = {
@@ -172,7 +174,7 @@ function App() {
         <Row>
           <Col xs={12} sm={6}>
             {details && 
-              (<Details details={ details } header={ header } />)
+              (<Details mainstream={ details } />)
             }
           </Col>
 

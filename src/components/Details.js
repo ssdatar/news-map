@@ -1,8 +1,10 @@
 import Table from 'react-bootstrap/Table';
 
 function Details(props) {
-  if (props.details.length) {
-    const { details, header } = props;
+  console.log(props);
+  if (props.mainstream.data.length) {
+    const { data, header } = props.mainstream;
+    console.log(data, header);
     
     return (
       <div>
@@ -17,7 +19,7 @@ function Details(props) {
           </thead>
           
           <tbody>
-          { details.map((s, i) => (
+          { data.map((s, i) => (
             <tr key={i}>
               <td><a href={s['WEB']}>{ s['OUTLET'] }</a></td>
               <td>{ s['COUNTY'] }</td>

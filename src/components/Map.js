@@ -20,7 +20,9 @@ const Map = (props) => {
       container: mapContainerRef.current,
       style: 'mapbox://styles/mapbox/dark-v10',
       center: [-105.358887, 39.113014],
-      zoom: 6
+      zoom: 6,
+      minZoom: 6,
+      maxZoom: 9
     });
 
     const resetFeature = (id) => {
