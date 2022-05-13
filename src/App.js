@@ -107,7 +107,6 @@ function App() {
     console.log(e);
     const btnData = allData.filter(d => d[key] === 'x');
     setDetails({ header: hedText[key], data: btnData});
-    // setHeader(hedText[key]);
   }
 
   const fillColor = {
