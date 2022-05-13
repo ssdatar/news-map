@@ -95,10 +95,17 @@ function App() {
     }
   };
 
-  const buttonHandler = (key) => {
+  const buttonHandler = (e, key) => {
+    const hedText = {
+      'STATEWIDE': 'Statewide mainstream outlets',
+      'COLab': 'COLab news outlets',
+      'CPA': 'CPA news outlets'
+    };
+
+    console.log(e);
     const btnData = allData.filter(d => d[key] === 'x');
     setDetails(btnData);
-    setHeader(key);
+    setHeader(hedText[key]);
   }
 
   const fillColor = {
@@ -154,8 +161,9 @@ function App() {
 
         <Row>
           <Col>
-            <Button onClick={e => buttonHandler('STATEWIDE') } variant="outline-dark">Statewide outlets</Button>
-            <Button onClick= {e => buttonHandler('COLab') } variant="outline-dark">COLab outlets</Button>
+            <Button onClick={e => buttonHandler(e, 'STATEWIDE') } variant="outline-dark" className='filter-table-btn'>Statewide publications</Button>
+            <Button onClick= {e => buttonHandler(e, 'COLab') } variant="outline-dark" className='filter-table-btn'>COLab publications</Button>
+            <Button onClick= {e => buttonHandler(e, 'CPA') } variant="outline-dark" className='filter-table-btn'>CPA publications</Button>
           </Col>
         </Row>
 
