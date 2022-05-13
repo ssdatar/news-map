@@ -1,5 +1,5 @@
 import { 
-  useState, useEffect, useCallback,
+  useState, useEffect,
 } from 'react';
 
 import Map from './components/Map';

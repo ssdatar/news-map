@@ -10,7 +10,6 @@ const Map = (props) => {
   const mapContainerRef = useRef(null);
   const popupRef = useRef(new mapboxgl.Popup({ offset: 15 }));
   const { source, fill } = props;
-  let hoveredStateId = null;
   const isMobile = window.innerWidth < 600 ? true: false;
   const zoom = isMobile ? 5 : 6;
   const height = isMobile ? 300 : 450;
@@ -25,6 +24,8 @@ const Map = (props) => {
       minZoom: zoom,
       maxZoom: 9
     });
+
+    let hoveredStateId = null;
 
     const resetFeature = (id) => {
       map.removeFeatureState({
@@ -85,7 +86,6 @@ const Map = (props) => {
         
         if (features.length > 0) {
           const feature = features[0];
-          console.log(feature)
           
           // create popup node
           const popupNode = document.createElement('div');
@@ -114,8 +114,7 @@ const Map = (props) => {
       });
 
       popupRef.current.on('close', () => {
-        console.log(hoveredStateId);
-        if(hoveredStateId) {
+        if (hoveredStateId) {
           resetFeature(hoveredStateId);
         }
       });
