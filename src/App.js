@@ -5,6 +5,7 @@ import {
 import Map from './components/Map';
 import Sources from './components/Sources';
 import Details from './components/Details';
+import Community from './components/Community';
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -26,7 +27,6 @@ function App() {
   const [summary, setSummary] = useState(null);
   const [details, setDetails] = useState(null);
   const [community, setCommunity] = useState(null);
-  const [header, setHeader] = useState(null);
 
   useEffect(() => {
     function getData() {
@@ -56,7 +56,6 @@ function App() {
           setShapeFile(shapeData);
           setNonTrad(processedNonTrad);
           setDetails({ header: 'Statewide news outlets', data: initDetails});
-          // setHeader('Statewide news outlets');
         }))
         .catch(errors => {
           console.log(errors);
@@ -85,13 +84,13 @@ function App() {
     const communityDetails = nonTrad.filter(d => d.county === f.properties.NAME);
     
     if (sourceDetails.length) {
-      setDetails({ header: `Mainstream news sources in ${f.properties.NAME} county`, data: sourceDetails});
+      setDetails({ header: `Mainstream news sources in ${f.properties.NAME} County`, data: sourceDetails});
     } else {
       setDetails(null);
     }
 
     if (communityDetails.length) {
-      setCommunity(communityDetails);
+      setCommunity({header: 'Community news sources', data: communityDetails });
     } else {
       setCommunity(null);
     }
@@ -172,37 +171,14 @@ function App() {
 
         <Row>
           <Col xs={12} sm={6}>
-            {details && 
+            { details && 
               (<Details mainstream={ details } />)
             }
           </Col>
 
           <Col xs={12} sm={6}>
-            {community && 
-              (<div>
-                <h4>{ 'Community news outlets' }</h4>
-                <Table className="details" striped hover responsive>
-                  <thead>
-                    <tr>
-                      <th>Outlet</th>
-                      <th>County</th>
-                      <th>Type</th>
-                      <th>Mission</th>
-                    </tr>
-                  </thead>
-                  
-                  <tbody>
-                  { community.map((s, i) => (
-                    <tr key={i}>
-                      <td><a href={s['link']}>{ s['name'] }</a></td>
-                      <td>{ s['county'] }</td>
-                      <td>{ s['type'] }</td>
-                      <td>{ s['mission'] }</td>
-                    </tr>
-                  ))}
-                  </tbody>
-                </Table>
-              </div>)
+            { community && 
+              (<Community community={ community } />)
             }
           </Col>
         </Row>

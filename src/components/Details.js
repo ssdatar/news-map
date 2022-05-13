@@ -1,4 +1,3 @@
-import Table from 'react-bootstrap/Table';
 import DataTable from 'react-data-table-component';
 
 function Details(props) {
