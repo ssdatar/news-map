@@ -12,7 +12,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 
-import Table from 'react-bootstrap/Table';
 import axios from 'axios';
 import { csvParse } from 'd3-dsv';
 import { addData, processSheet, lookupRef, otherSheet } from './utils';
@@ -86,13 +85,13 @@ function App() {
     if (sourceDetails.length) {
       setDetails({ header: `Mainstream news sources in ${f.properties.NAME} County`, data: sourceDetails});
     } else {
-      setDetails(null);
+      setDetails({ header: '', data: []});
     }
 
     if (communityDetails.length) {
       setCommunity({header: 'Community news sources', data: communityDetails });
     } else {
-      setCommunity(null);
+      setCommunity({ header: '', data: []});
     }
   };
 

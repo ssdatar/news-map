@@ -56,7 +56,7 @@ function Details(props) {
     //   </div>
     // )
   } else {
-    return null;
+    return <h4>This county has no mainstream news sources.</h4>;
   }
 }
 

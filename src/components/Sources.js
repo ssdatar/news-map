@@ -4,7 +4,7 @@ function Sources(props) {
   if (props.sources !== undefined) {
     const { sources } = props;
     return (
-      <Table striped hover responsive>
+      <Table hover responsive>
         <thead>
           <tr>
             <th>Type of source</th>
