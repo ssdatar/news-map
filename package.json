@@ -22,6 +22,7 @@
     "react-map-gl": "^7.0.10",
     "react-scripts": "5.0.1",
     "sass": "^1.50.0",
+    "styled-components": "^5.3.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -49,6 +50,14 @@
     ]
   },
   "devDependencies": {
-    "@newswire/sheet-to-data": "^1.0.0"
+    "@newswire/sheet-to-data": "^1.0.0",
+    "jest-watch-typeahead": "^0.6.5",
+    "react-test-renderer": "^18.1.0"
+  },
+  "jest": {
+    "transform": {
+      "\\.[jt]sx?$": "babel-jest"
+    },
+    "transformIgnorePatterns": ["/node_modules/(?!(d3-dsv|d3-array|internmap)/)"]
   }
 }

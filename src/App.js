@@ -149,7 +149,7 @@ function App() {
           <Col xs={12} md={4} lg={4}>
             {summary && (
               <div>
-                <h5>{ summary.properties.NAME }</h5>
+                <h5 className='summary-hed'>{ summary.properties.NAME }</h5>
                 <Sources county={summary.properties.NAME} sources={summary.properties.source_summary} />
               </div>
             )}
@@ -160,9 +160,11 @@ function App() {
 
         <Row>
           <Col>
-            <Button onClick={e => buttonHandler(e, 'STATEWIDE') } variant="outline-dark" className='filter-table-btn'>Statewide publications</Button>
-            <Button onClick= {e => buttonHandler(e, 'COLab') } variant="outline-dark" className='filter-table-btn'>COLab publications</Button>
-            <Button onClick= {e => buttonHandler(e, 'CPA') } variant="outline-dark" className='filter-table-btn'>CPA publications</Button>
+            <div className="button-filters">
+              <Button onClick={e => buttonHandler(e, 'STATEWIDE') } variant="outline-dark" className='filter-table-btn'>Statewide publications</Button>
+              <Button onClick= {e => buttonHandler(e, 'COLab') } variant="outline-dark" className='filter-table-btn'>COLab publications</Button>
+              <Button onClick= {e => buttonHandler(e, 'CPA') } variant="outline-dark" className='filter-table-btn'>CPA publications</Button>
+            </div>  
           </Col>
         </Row>
 

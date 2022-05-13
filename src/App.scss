@@ -1,20 +1,16 @@
 @import "~bootstrap/scss/bootstrap";
+@import "theme";
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
 
 #root {
   margin: 1em;
   font-family: 'Montserrat', sans-serif !important;
+  color: $theme-purple;
 }
 
 .App {
   margin: 1em;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
 
 .App-header {
   background-color: #282c34;
@@ -27,8 +23,12 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.summary-hed {
+  margin-top: 0.5em;
+
+  @media screen and (min-width: 600px) {
+    margin-top: 0;
+  }
 }
 
 .tooltip {
@@ -55,11 +55,32 @@
   height: 15px;
 }
 
+.button-filters {
+  display: flex;
+}
+
 .filter-table-btn {
   margin-right: .5em;
+  background: $btn;
+  color: $text-light;
+  border: none;
+  font-size: 0.8em;
+
+  &:hover, &:focus {
+    background: lighten($btn, 30);
+    // color: darken($text-light, 70);
+  }
+
+  @media screen and (min-width: 500px) {
+    font-size: 1em;
+  }
 }
 
 .rdt_Table {
   font-size: 1.1em;
+
+  .community-mission {
+    font-size: .8em;
+  }
 }
 

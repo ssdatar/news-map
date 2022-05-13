@@ -3,7 +3,15 @@ import DataTable from 'react-data-table-component';
 function Community(props) {
   if (props.community.data.length) {
     const { data, header } = props.community;
-    console.log(data, header);
+    const customStyles = {
+      rows: {
+          style: {
+              minHeight: '50px', // override the row height
+          },
+      }
+    };
+
+    const ExpandedComponent = ({ data }) => <p className='community-mission'>{ data.mission }</p>;
     
     const columns = [
       {
@@ -21,17 +29,18 @@ function Community(props) {
         name: 'Type',
         selector: row => row.type,
       },
-      {
-        name: 'Mission',
-        selector: row => row.mission,
-        wrap: true,
-      }
+      // {
+      //   name: 'Mission',
+      //   selector: row => row.mission,
+      //   wrap: true,
+      //   height: '50px',
+      // }
     ];
 
     return (
       <div>
         <h4>{ header }</h4>
-        <DataTable className='rdt_Table' columns={columns} data={data} pagination />
+        <DataTable className='rdt_Table' columns={columns} data={data} customStyles={customStyles} pagination highlightOnHover expandableRows expandableRowsComponent={ExpandedComponent}/>
       </div>
     );
   } else {

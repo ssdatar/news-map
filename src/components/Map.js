@@ -11,8 +11,9 @@ const Map = (props) => {
   const popupRef = useRef(new mapboxgl.Popup({ offset: 15 }));
   const { source, fill } = props;
   let hoveredStateId = null;
-
-  // console.log(props);
+  const isMobile = window.innerWidth < 600 ? true: false;
+  const zoom = isMobile ? 5 : 6;
+  const height = isMobile ? 300 : 450;
 
   // Initialize map when component mounts
   useEffect(() => {
@@ -20,8 +21,8 @@ const Map = (props) => {
       container: mapContainerRef.current,
       style: 'mapbox://styles/mapbox/dark-v10',
       center: [-105.358887, 39.113014],
-      zoom: 6,
-      minZoom: 6,
+      zoom: zoom,
+      minZoom: zoom,
       maxZoom: 9
     });
 
@@ -126,7 +127,7 @@ const Map = (props) => {
 
   return (
     <div>
-      <div className='map-container' ref={mapContainerRef} style={{width: '100%', height: 450}} />
+      <div className='map-container' ref={mapContainerRef} style={{width: '100%', height: height}} />
     </div>
   );
 };

@@ -1,7 +1,6 @@
 import DataTable from 'react-data-table-component';
 
 function Details(props) {
-  console.log(props);
   if (props.mainstream.data.length) {
     const { data, header } = props.mainstream;
 
@@ -26,7 +25,7 @@ function Details(props) {
 
     return (
       <div>
-        <h4>{ header }</h4>
+        <h4 className='mainstream'>{ header }</h4>
         <DataTable className='rdt_Table' columns={columns} data={data} pagination />
       </div>
     );
