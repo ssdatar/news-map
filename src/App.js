@@ -41,7 +41,7 @@ function App() {
           responseType: 'text',
         });
 
-      const geoJson = axios.get('colorado.json');
+      const geoJson = axios.get('map.json');
 
       axios.all([mainSheet, nonTraditional, geoJson])
         .then(axios.spread((...responses) => {
