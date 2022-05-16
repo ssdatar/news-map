@@ -22,10 +22,12 @@
     "react-map-gl": "^7.0.10",
     "react-scripts": "5.0.1",
     "sass": "^1.50.0",
+    "source-map-explorer": "^2.5.2",
     "styled-components": "^5.3.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -58,6 +60,8 @@
     "transform": {
       "\\.[jt]sx?$": "babel-jest"
     },
-    "transformIgnorePatterns": ["/node_modules/(?!(d3-dsv|d3-array|internmap)/)"]
+    "transformIgnorePatterns": [
+      "/node_modules/(?!(d3-dsv|d3-array|internmap)/)"
+    ]
   }
 }
