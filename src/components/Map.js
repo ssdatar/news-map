@@ -98,7 +98,7 @@ const Map = (props) => {
 
           props.passData(feature);
 
-          if (hoveredStateId && feature.properties.news_sources > 0) {
+          if (hoveredStateId && feature.properties.total_sources > 0) {
             resetFeature(hoveredStateId);
           }
           hoveredStateId = feature.id;

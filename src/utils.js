@@ -1,7 +1,6 @@
 import { rollup, group } from 'd3-array';
 
 export function processSheet(sheet) {
-  // console.log(sheet);
   sheet.forEach(s => {
     if (s.SECTOR.length < 2) {
       s.SECTOR = 'Other';
@@ -10,10 +9,13 @@ export function processSheet(sheet) {
   return sheet;
 }
 
-export function addData(shape, data) {
+export function addData(shape, data, nt) {
   // Calculate number of news sources
   const lookup = rollup(data, v => v.length, d => d.COUNTY);
   const grouped = group(data, d => d.COUNTY, d => d.SECTOR);
+  const nonTrad = rollup(nt, v => v.length, d => d.county);
+  const ntGrp = group(nt, d => d.county, d => d.type);
+  // console.log(ntGrp);
 
   // Add to shapefile
   shape.features.forEach(county => {
@@ -32,7 +34,27 @@ export function addData(shape, data) {
       county.properties.news_sources = 0;
       county.properties.news_sources_list = {};
     }
+
+    if (nonTrad.has(county.properties.NAME)) {
+      county.properties.community_sources = nonTrad.get(county.properties.NAME);
+      county.properties.community_source_summary = [];
+      
+      ntGrp.get(county.properties.NAME).forEach((_v, key) => {
+        county.properties.community_source_summary.push([key, _v.length]);
+      });
+    } else {
+      county.properties.community_sources = 0;
+      county.properties.community_source_summary = [];
+    }
+
+    county.properties.total_sources = county.properties.news_sources + county.properties.community_sources;
   });
+
+  // console.log(ntGrp.get('Teller'));
+
+  // let s = shape.features.map(d => d.properties.total_sources);
+  // console.log(Math.max(...s), Math.min(...s), s.reduce((a, b) => a + b) / s.length)
+  // console.log(s.sort())
 
   // console.log(grouped.get('Denver'));
   // grouped.get('Denver').forEach((_v, key) => {

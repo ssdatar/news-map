@@ -46,8 +46,8 @@ function App() {
       axios.all([mainSheet, nonTraditional, geoJson])
         .then(axios.spread((...responses) => {
           const parsedMain = processSheet(csvParse(responses[0].data));
-          const shapeData = addData(responses[2].data, parsedMain);
           const processedNonTrad = otherSheet(csvParse(responses[1].data));
+          const shapeData = addData(responses[2].data, parsedMain, processedNonTrad);
           const initDetails = parsedMain.filter(d => d.STATEWIDE === 'x');
           
           setAllData(parsedMain);
@@ -60,7 +60,6 @@ function App() {
           console.log(errors);
         });
     };
-
     getData();
   }, []);
 
@@ -102,7 +101,6 @@ function App() {
       'CPA': 'CPA news outlets'
     };
 
-    console.log(e);
     const btnData = allData.filter(d => d[key] === 'x');
     setDetails({ header: hedText[key], data: btnData});
   }
@@ -113,7 +111,7 @@ function App() {
     paint: {
       'fill-outline-color': '#787878',
       'fill-color': {
-        property: 'news_sources',
+        property: 'total_sources',
         stops: [
           [0, 'transparent'],
           [1, '#feebe2'],
@@ -137,6 +135,9 @@ function App() {
     return (
       <Container fluid>
         <Row>
+
+        </Row>
+        <Row>
           <Col xs={12} md={8} lg={8}>
             <Map 
               source={shapeFile} 
@@ -150,6 +151,9 @@ function App() {
             {summary && (
               <div>
                 <h5 className='summary-hed'>{ summary.properties.NAME }</h5>
+                <p class='summary-intro'>This county has { summary.properties.total_sources } news sources.</p>
+
+                <h6>Mainstream news sources</h6>
                 <Sources county={summary.properties.NAME} sources={summary.properties.source_summary} />
               </div>
             )}

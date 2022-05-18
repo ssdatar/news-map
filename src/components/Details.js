@@ -35,31 +35,6 @@ function Details(props) {
         />
       </div>
     );
-    
-    // return (
-    //   <div>
-    //     <h4>{ header }</h4>
-    //     <Table className="details" striped hover responsive>
-    //       <thead>
-    //         <tr>
-    //           <th>Outlet</th>
-    //           <th>County</th>
-    //           <th>Sector</th>
-    //         </tr>
-    //       </thead>
-          
-    //       <tbody>
-    //       { data.map((s, i) => (
-    //         <tr key={i}>
-    //           <td><a href={s['WEB']}>{ s['OUTLET'] }</a></td>
-    //           <td>{ s['COUNTY'] }</td>
-    //           <td>{ s['SECTOR'] }</td>
-    //         </tr>
-    //       ))}
-    //       </tbody>
-    //     </Table>
-    //   </div>
-    // )
   } else {
     return <h4>This county has no mainstream news sources.</h4>;
   }
