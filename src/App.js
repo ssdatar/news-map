@@ -6,6 +6,7 @@ import Map from './components/Map';
 import Sources from './components/Sources';
 import Details from './components/Details';
 import Community from './components/Community';
+import Census from './components/Census';
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -15,6 +16,7 @@ import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import { csvParse } from 'd3-dsv';
 import { addData, processSheet, lookupRef, otherSheet } from './utils';
+import { intcomma } from 'journalize';
 
 import './App.scss';
 
@@ -149,7 +151,7 @@ function App() {
 
         </Row>
         <Row>
-          <Col xs={12} md={8} lg={8}>
+          <Col xs={12} md={8} lg={7}>
             <Map 
               source={shapeFile} 
               fill={ fillColor }
@@ -158,23 +160,34 @@ function App() {
             </Map>
           </Col>
 
-          <Col xs={12} md={4} lg={4}>
-            {summary && (
-              <div>
-                <h5 className='summary-hed'>{ summary.properties.NAME }</h5>
-                <p className='summary-intro'>This county has { summary.properties.total_sources } news sources.</p>
-
-                <h6>Mainstream news sources</h6>
-                <Sources type='mainstream' county={summary.properties.NAME} sources={summary.properties.source_summary} />
-              </div>
-            )}
-
-            {communitySummary && (
-              <div>
-                <h6>Community news sources</h6>
-                <Sources type='community' county={summary.properties.NAME} sources={summary.properties.community_source_summary} />
-              </div>
-            )}
+          <Col xs={12} md={4} lg={5}>
+            {summary &&
+              (
+                <div>
+                  <h4 className='summary__hed'>{ summary.properties.NAME }</h4>
+                  <Census feature={ summary }/>
+                  <p className='summary__intro'>This county has { summary.properties.total_sources } news sources.</p>
+                </div>
+              )}
+            <Row>
+              <Col xs={6}>
+                {summary && (
+                  <div>
+                    <h6>Mainstream news sources</h6>
+                    <Sources type='mainstream' county={summary.properties.NAME} sources={summary.properties.source_summary} />
+                  </div>
+                )}
+              </Col>
+              
+              <Col xs={6}>
+                {communitySummary && (
+                  <div>
+                    <h6>Community news sources</h6>
+                    <Sources type='community' county={summary.properties.NAME} sources={summary.properties.community_source_summary} />
+                  </div>
+                )}
+              </Col>
+            </Row>
           </Col>
         </Row>
 

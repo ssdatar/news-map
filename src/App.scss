@@ -23,12 +23,19 @@
   color: white;
 }
 
-.summary-hed {
-  margin-top: 0.5em;
+.summary {
+  &__hed {
+    margin-top: 0.5em;
+    font-weight: bold;
 
-  @media screen and (min-width: 600px) {
-    margin-top: 0;
+    @media screen and (min-width: 600px) {
+      margin-top: 0;
+    }
   }
+}
+
+.summary__intro {
+
 }
 
 .tooltip {

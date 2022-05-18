@@ -1,0 +1,13 @@
+.census {
+  &__data {
+    text-align: left;
+  }
+
+  &__number {
+    
+    &--num {
+      font-weight: bold;
+      margin-bottom: .2em;
+    }
+  }
+}

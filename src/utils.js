@@ -37,10 +37,6 @@ export function addData(shape, data, nt) {
 
     if (nonTrad.has(county.properties.NAME)) {
       county.properties.community_sources = nonTrad.get(county.properties.NAME);
-      
-      // ntGrp.get(county.properties.NAME).forEach((_v, key) => {
-      //   county.properties.community_source_summary.push([key, _v.length]);
-      // });
     } else {
       county.properties.community_sources = 0;
       // county.properties.community_source_summary = [];
