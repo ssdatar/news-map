@@ -37,14 +37,13 @@ export function addData(shape, data, nt) {
 
     if (nonTrad.has(county.properties.NAME)) {
       county.properties.community_sources = nonTrad.get(county.properties.NAME);
-      county.properties.community_source_summary = [];
       
-      ntGrp.get(county.properties.NAME).forEach((_v, key) => {
-        county.properties.community_source_summary.push([key, _v.length]);
-      });
+      // ntGrp.get(county.properties.NAME).forEach((_v, key) => {
+      //   county.properties.community_source_summary.push([key, _v.length]);
+      // });
     } else {
       county.properties.community_sources = 0;
-      county.properties.community_source_summary = [];
+      // county.properties.community_source_summary = [];
     }
 
     county.properties.total_sources = county.properties.news_sources + county.properties.community_sources;
@@ -63,8 +62,8 @@ export function addData(shape, data, nt) {
   return shape;
 }
 
-export function lookupRef(data) {
-  return group(data, d => d.COUNTY, d => d.SECTOR);
+export function lookupRef(data, k1, k2) {
+  return group(data, d => d[k1], d => d[k2]);
 }
 
 export function otherSheet(insheet) {

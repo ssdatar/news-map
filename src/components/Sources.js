@@ -2,7 +2,7 @@ import Table from 'react-bootstrap/Table';
 
 function Sources(props) {
   console.log(props);
-  if (props.sources !== undefined) {
+  if (props.sources !== undefined && props.sources.length) {
     const { sources } = props;
     return (
       <div>
@@ -28,7 +28,7 @@ function Sources(props) {
     );
   } else {
     return(
-      <p>This county has no news sources of this type.</p>
+      <p>This county has no { props.type } news sources of this type.</p>
     );
   }
 }

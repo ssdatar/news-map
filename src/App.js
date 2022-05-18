@@ -23,7 +23,9 @@ function App() {
   const [lookup, setLookup] = useState(null);
   const [shapeFile, setShapeFile] = useState(null);
   const [nonTrad, setNonTrad] = useState(null);
+  const [ntLookup, setNtLookup] = useState(null);
   const [summary, setSummary] = useState(null);
+  const [communitySummary, setCommunitySummary] = useState(null);
   const [details, setDetails] = useState(null);
   const [community, setCommunity] = useState(null);
 
@@ -51,9 +53,10 @@ function App() {
           const initDetails = parsedMain.filter(d => d.STATEWIDE === 'x');
           
           setAllData(parsedMain);
-          setLookup(lookupRef(parsedMain));
+          setLookup(lookupRef(parsedMain, 'COUNTY', 'SECTOR'));
           setShapeFile(shapeData);
           setNonTrad(processedNonTrad);
+          setNtLookup(lookupRef(processedNonTrad, 'county', 'type'));
           setDetails({ header: 'Statewide news outlets', data: initDetails});
         }))
         .catch(errors => {
@@ -72,11 +75,19 @@ function App() {
         f.properties.source_summary.push([key, _v.length]);
       });
 
-      f.properties.source_summary = f.properties.source_summary.sort((a, b) => {
-        return b[1] - a[1];
-      });
+      f.properties.source_summary = f.properties.source_summary.sort((a, b) => b[1] - a[1]);
     }
     setSummary(f);
+    
+    if (ntLookup.get(f.properties.NAME)) {
+      f.properties.community_source_summary = [];
+      
+      ntLookup.get(f.properties.NAME).forEach((v, k) => {
+        f.properties.community_source_summary.push([k, v.length]);
+      });
+      f.properties.community_source_summary = f.properties.community_source_summary.sort(((a, b) => b[1] - a[1]));
+    }
+    setCommunitySummary(f);
     
     const sourceDetails = allData.filter(d => d.COUNTY === f.properties.NAME);
     const communityDetails = nonTrad.filter(d => d.county === f.properties.NAME);
@@ -151,10 +162,17 @@ function App() {
             {summary && (
               <div>
                 <h5 className='summary-hed'>{ summary.properties.NAME }</h5>
-                <p class='summary-intro'>This county has { summary.properties.total_sources } news sources.</p>
+                <p className='summary-intro'>This county has { summary.properties.total_sources } news sources.</p>
 
                 <h6>Mainstream news sources</h6>
-                <Sources county={summary.properties.NAME} sources={summary.properties.source_summary} />
+                <Sources type='mainstream' county={summary.properties.NAME} sources={summary.properties.source_summary} />
+              </div>
+            )}
+
+            {communitySummary && (
+              <div>
+                <h6>Community news sources</h6>
+                <Sources type='community' county={summary.properties.NAME} sources={summary.properties.community_source_summary} />
               </div>
             )}
           </Col>
