@@ -1,7 +1,8 @@
 import React, { useRef, useEffect } from 'react';
 import mapboxgl from 'mapbox-gl';
-import Tooltip from './Tooltip';
 import ReactDOM from 'react-dom';
+import Tooltip from './Tooltip';
+import Legend from './Legend';
 
 mapboxgl.accessToken =
   'pk.eyJ1IjoiZGF0YXJrYWxsb28iLCJhIjoiY2toOXI3aW5kMDRlZTJ4cWt0MW5kaHg4eCJ9.V4NfOecIoFaErvFv_lfKLg';
@@ -125,8 +126,8 @@ const Map = (props) => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div>
-      <div className='map-container' ref={mapContainerRef} style={{width: '100%', height: height}} />
+    <div className='map'>
+      <div className='map__container' ref={mapContainerRef} style={{width: '100%', height: height}} />
     </div>
   );
 };

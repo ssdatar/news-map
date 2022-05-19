@@ -8,19 +8,23 @@
   color: $theme-purple;
 }
 
-.App {
-  margin: 1em;
+.bold {
+  font-weight: bold;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.App {
+  margin: 1em;
+
+  &__subhed {
+    font-size: 1em;
+  }
+}
+
+.map {
+  &__subhed {
+    font-weight: bold;
+    font-size: .95em;
+  }
 }
 
 .summary {
@@ -54,6 +58,10 @@
   display: flex;
   margin-bottom: .25em;
 
+  @media screen and (min-width: 768px) {
+    margin-bottom: .5em;  
+  }
+
   &__categ {
     margin-right: .55em;
     display: flex;
@@ -64,7 +72,7 @@
       width: 20px;
     }
     &--text {
-      font-size: .8em;
+      font-size: .85em;
       margin-left: .3em;
     }
   }

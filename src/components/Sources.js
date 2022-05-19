@@ -5,9 +5,9 @@ function Sources(props) {
   if (props.sources !== undefined && props.sources.length) {
     const { sources } = props;
     return (
-      <div>
+      <div className='source'>
         {/*<h6>news sources</h6>*/}
-        <Table hover responsive striped>
+        <Table  className='source__table' hover responsive striped>
           {/*<thead>
             <tr>
               <th>Type of source</th>
