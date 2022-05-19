@@ -17,7 +17,6 @@ import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import { csvParse } from 'd3-dsv';
 import { addData, processSheet, lookupRef, otherSheet } from './utils';
-import { intcomma } from 'journalize';
 
 import './App.scss';
 

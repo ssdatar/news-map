@@ -14,7 +14,7 @@ export function addData(shape, data, nt) {
   const lookup = rollup(data, v => v.length, d => d.COUNTY);
   const grouped = group(data, d => d.COUNTY, d => d.SECTOR);
   const nonTrad = rollup(nt, v => v.length, d => d.county);
-  const ntGrp = group(nt, d => d.county, d => d.type);
+  // const ntGrp = group(nt, d => d.county, d => d.type);
   // console.log(ntGrp);
 
   // Add to shapefile

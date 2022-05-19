@@ -29,7 +29,7 @@
 
 .summary {
   &__hed {
-    margin-top: 0.5em;
+    margin: 0.5em 0;
     font-weight: bold;
 
     @media screen and (min-width: 600px) {
@@ -83,7 +83,11 @@
 }
 
 .details {
-  margin: 1em 0;
+  margin: .5em 0;
+
+  &__hed {
+    font-size: 1.2rem;
+  }
 }
 
 .spacer {

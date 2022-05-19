@@ -18,7 +18,7 @@ function Legend() {
   ));
 
   return (
-    <div className="legend">
+    <div key='legend' className="legend">
       { legend }
     </div>
   )

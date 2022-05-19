@@ -38,8 +38,8 @@ function Community(props) {
     ];
 
     return (
-      <div>
-        <h4>{ header }</h4>
+      <div className='details community'>
+        <h4 className='details__hed'>{ header }</h4>
         <DataTable 
           className='rdt_Table' 
           columns={columns} 
