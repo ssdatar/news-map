@@ -50,6 +50,26 @@
   pointer-events: none;
 }
 
+.legend {
+  display: flex;
+  margin-bottom: .25em;
+
+  &__categ {
+    margin-right: .55em;
+    display: flex;
+    align-items: center;
+
+    &--box {
+      height: 10px;
+      width: 20px;
+    }
+    &--text {
+      font-size: .8em;
+      margin-left: .3em;
+    }
+  }
+}
+
 .mapboxgl-map {
   font-family: 'Montserrat', sans-serif !important;
 }

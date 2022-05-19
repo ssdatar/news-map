@@ -7,6 +7,7 @@ import Sources from './components/Sources';
 import Details from './components/Details';
 import Community from './components/Community';
 import Census from './components/Census';
+import Legend from './components/Legend';
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -152,6 +153,8 @@ function App() {
         </Row>
         <Row>
           <Col xs={12} md={8} lg={7}>
+            <Legend />
+            
             <Map 
               source={shapeFile} 
               fill={ fillColor }
@@ -164,7 +167,7 @@ function App() {
             {summary &&
               (
                 <div>
-                  <h4 className='summary__hed'>{ summary.properties.NAME }</h4>
+                  <h4 className='summary__hed'>{ summary.properties.NAME } County</h4>
                   <Census feature={ summary }/>
                   <p className='summary__intro'>This county has { summary.properties.total_sources } news sources.</p>
                 </div>

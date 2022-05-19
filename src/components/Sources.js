@@ -7,7 +7,7 @@ function Sources(props) {
     return (
       <div>
         {/*<h6>news sources</h6>*/}
-        <Table hover responsive>
+        <Table hover responsive striped>
           {/*<thead>
             <tr>
               <th>Type of source</th>

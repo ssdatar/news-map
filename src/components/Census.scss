@@ -4,10 +4,12 @@
   }
 
   &__number {
-    
     &--num {
       font-weight: bold;
       margin-bottom: .2em;
+    }
+    &--description {
+      font-size: .9em;
     }
   }
 }
