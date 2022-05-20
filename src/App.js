@@ -13,6 +13,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import Spinner from 'react-bootstrap/Spinner';
 
 import axios from 'axios';
 import { addData, processSheet, lookupRef, otherSheet } from './utils';
@@ -42,11 +43,11 @@ function App() {
 
       const nonTraditional = axios.get('community.json')
 
-      axios({
-          url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGQJ9V4Tz9pw4AY32VzE-PpMz7zTfnAUkXD6OQM5koNnMU835n1gJOdNeLD8TPgtJtP8KE5Q7nlvgx/pub?output=csv', 
-          method: 'GET',
-          responseType: 'text',
-        });
+      // axios({
+      //     url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGQJ9V4Tz9pw4AY32VzE-PpMz7zTfnAUkXD6OQM5koNnMU835n1gJOdNeLD8TPgtJtP8KE5Q7nlvgx/pub?output=csv', 
+      //     method: 'GET',
+      //     responseType: 'text',
+      //   });
 
       const geoJson = axios.get('map.json');
 
@@ -228,7 +229,13 @@ function App() {
       </Container>
     );
   } else {
-    return null;
+    return (
+      <div className="loading">
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </div>
+    );
   }
 }
 
