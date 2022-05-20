@@ -4,7 +4,12 @@ const os = require('os');
 const fs = require('fs');
 const path = require('path');
 const keyFile = 'key.json';
-const spreadsheetId = '17bTnDwGfGngsipW-fyQdOAFRkLdtc1_BI9DeLivstoY';
+const spreadsheetId = [
+  '17bTnDwGfGngsipW-fyQdOAFRkLdtc1_BI9DeLivstoY',
+  '1UbaS83sKrUrH3c7e-QPzVkiMsmmWA9HIB53ngrcp560'
+];
+const ranges = ['EditedList-News outlets by county!A1:Q', 'Form Responses 1!A1:I'];
+const outFileNames = ['mainstream.json', 'community.json'];
 
 // https://github.com/rdmurphy/sheet-to-data/blob/master/index.js
 function zipObject(keys, values) {
@@ -35,17 +40,21 @@ async function main() {
     auth,
   });
 
-  const results = await sheets.spreadsheets.values.get({
-    spreadsheetId,
-    range: 'EditedList-News outlets by county!A1:Q',
-  });
+  for (let i = 0; i < spreadsheetId.length; i++) {
+    console.log(spreadsheetId[i]);
+    
+    const results = await sheets.spreadsheets.values.get({
+      spreadsheetId: spreadsheetId[i],
+      range: ranges[i],
+    });
 
-  const rows = results.data.values;
-  const headers = rows[0];
-  const data = rows.slice(1).map(values => zipObject(headers, values));
+    const rows = results.data.values;
+    const headers = rows[0];
+    const data = rows.slice(1).map(values => zipObject(headers, values));
+    const fp = 'public/' + outFileNames[i];
 
-  fs.writeFileSync('public/test.json', JSON.stringify({ data }));
-  
+    fs.writeFileSync(fp, JSON.stringify({ data }));
+  }
 }
 
 main().catch(console.error);
