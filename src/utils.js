@@ -1,6 +1,7 @@
 import { rollup, group } from 'd3-array';
 
 export function processSheet(sheet) {
+  console.log(sheet);
   sheet.forEach(s => {
     if (s.SECTOR.length < 2) {
       s.SECTOR = 'Other';
