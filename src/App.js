@@ -34,27 +34,13 @@ function App() {
   useEffect(() => {
     function getData() {
       const mainSheet = axios.get('mainstream.json');
-
-      // axios({
-      //     url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ3OCcVgY7Sy8GBRUlrsLWJkfJnEtT5L7IqxNNRon1_Pw3keeVbNfs1h3QUFcFd9jz9cIfoIXg0MTn1/pub?gid=1853710081&single=true&output=csv', 
-      //     method: 'GET',
-      //     responseType: 'text',
-      //   });
-
       const nonTraditional = axios.get('community.json')
-
-      // axios({
-      //     url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGQJ9V4Tz9pw4AY32VzE-PpMz7zTfnAUkXD6OQM5koNnMU835n1gJOdNeLD8TPgtJtP8KE5Q7nlvgx/pub?output=csv', 
-      //     method: 'GET',
-      //     responseType: 'text',
-      //   });
-
       const geoJson = axios.get('map.json');
 
       axios.all([mainSheet, nonTraditional, geoJson])
         .then(axios.spread((...responses) => {
-          const parsedMain = processSheet((responses[0].data.data));
-          const processedNonTrad = otherSheet((responses[1].data.data));
+          const parsedMain = processSheet(responses[0].data.data);
+          const processedNonTrad = otherSheet(responses[1].data.data);
           const shapeData = addData(responses[2].data, parsedMain, processedNonTrad);
           const initDetails = parsedMain.filter(d => d.STATEWIDE === 'x');
           
