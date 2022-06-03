@@ -11,7 +11,14 @@ function Community(props) {
       }
     };
 
-    const ExpandedComponent = ({ data }) => <p className='community-mission'>{ data.mission }</p>;
+    const ExpandedComponent = ({ data }) => {
+      return(
+        <div>
+          <p className='community-mission'>{ data.other_info }</p>
+          <p className='community-mission'>{ data.mission }</p>
+        </div>
+      )
+    };
     
     const columns = [
       {
