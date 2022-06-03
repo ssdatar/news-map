@@ -70,10 +70,15 @@ export function otherSheet(insheet) {
 
   insheet.forEach(row => {
     let dict = {};
-    keys.forEach((k, i) => {
-      dict[outKeys[i]] = row[k];
-    })
-    answer.push(dict);
+    // console.log(row);
+    if (row['Name of News or Information Source']) {
+      keys.forEach((k, i) => {
+        dict[outKeys[i]] = row[k].trim();
+      })
+      answer.push(dict);
+    } else {
+      console.log('empty row');
+    }
   });
   return answer;
 }

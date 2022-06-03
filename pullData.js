@@ -50,7 +50,9 @@ async function main() {
 
     const rows = results.data.values;
     const headers = rows[0];
-    const data = rows.slice(1).map(values => zipObject(headers, values));
+    const data = rows.slice(1)
+      .map(values => zipObject(headers, values));
+    
     const fp = 'public/' + outFileNames[i];
 
     fs.writeFileSync(fp, JSON.stringify({ data }));
