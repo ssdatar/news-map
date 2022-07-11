@@ -5,21 +5,21 @@ const fs = require('fs');
 const path = require('path');
 const keyFile = 'key.json';
 const spreadsheetId = [
-  '17bTnDwGfGngsipW-fyQdOAFRkLdtc1_BI9DeLivstoY',
-  '1UbaS83sKrUrH3c7e-QPzVkiMsmmWA9HIB53ngrcp560'
+  '1bsA8GRGqkfyDr-tGlvbEkfZS7caNzLaloi_DGri5S5Q',
+  // '1UbaS83sKrUrH3c7e-QPzVkiMsmmWA9HIB53ngrcp560'
 ];
-const ranges = ['EditedList-News outlets by county!A1:Q', 'Form Responses 1!A1:I'];
-const outFileNames = ['mainstream.json', 'community.json'];
+const ranges = ['EditedList-News outlets by county!A1:T'];
+const outFileNames = ['mainstream.json'];
 
 // https://github.com/rdmurphy/sheet-to-data/blob/master/index.js
 function zipObject(keys, values) {
   const result = {};
 
   keys.forEach((key, i) => {
-    if (values) {
+    if (values[i]) {
       result[key] = values[i];
     } else {
-      result[key[0]] = key[1];
+      result[key] = '';
     }
   });
 
@@ -50,6 +50,7 @@ async function main() {
 
     const rows = results.data.values;
     const headers = rows[0];
+    // console.log(rows[1])
     const data = rows.slice(1)
       .map(values => zipObject(headers, values));
     
