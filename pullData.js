@@ -17,9 +17,9 @@ function zipObject(keys, values) {
 
   keys.forEach((key, i) => {
     if (values[i]) {
-      result[key] = values[i];
+      result[key.trim()] = values[i];
     } else {
-      result[key] = '';
+      result[key.trim()] = '';
     }
   });
 

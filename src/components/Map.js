@@ -14,6 +14,10 @@ const Map = (props) => {
   const isMobile = window.innerWidth < 600 ? true: false;
   const zoom = isMobile ? 5 : 6;
   const height = isMobile ? 300 : 450;
+  const bounds = [
+    [36.34551832917399, -109.85188785617123], // southwestern corner of the bounds
+    [41.77721285520039, -100.80719442257701] // northeastern corner of the bounds
+  ].map(d => d.reverse());
 
   // Initialize map when component mounts
   useEffect(() => {
@@ -23,8 +27,16 @@ const Map = (props) => {
       center: [-105.358887, 39.113014],
       zoom: zoom,
       minZoom: zoom,
-      maxZoom: 9
+      maxZoom: 6,
+      maxBounds: bounds
     });
+
+    map.fitBounds(bounds);
+
+    // map.fitBounds([
+    //   [-109.059196, 36.992751], // southwestern corner of the bounds
+    //   [-102.042126,41.001982] // northeastern corner of the bounds
+    // ]);
 
     let hoveredStateId = null;
 

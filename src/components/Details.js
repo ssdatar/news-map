@@ -1,4 +1,5 @@
 import DataTable from 'react-data-table-component';
+import { formatNumber } from './utils';
 
 function Details(props) {
   if (props.mainstream.data.length) {
@@ -20,6 +21,11 @@ function Details(props) {
         name: 'Sector',
         selector: row => row.SECTOR,
         sortable: true,
+      },
+      {
+        name: 'Reach',
+        selector: row => formatNumber(+row['REACH (if available)']),
+        sortable: false,
       }
     ];
 
