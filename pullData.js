@@ -26,6 +26,17 @@ function zipObject(keys, values) {
   return result;
 }
 
+const ownerType = (t) => {
+  const typeDict = {
+    '1': 'Privately-owned',
+    '2': 'Under Ownership Group Out of State',
+    '3': 'Under Ownership Group in Colorado',
+    '4': 'Unknown/Other',
+  };
+
+  return typeDict[t] || 'Unknown/Other';
+};
+
 async function main() {
   // this method looks for the GCLOUD_PROJECT and GOOGLE_APPLICATION_CREDENTIALS
   // environment variables to establish authentication
@@ -53,6 +64,10 @@ async function main() {
     // console.log(rows[1])
     const data = rows.slice(1)
       .map(values => zipObject(headers, values));
+      
+    data.forEach(row => {
+      row['OWTYPE'] = ownerType(row['OWTYPE'])
+    });
     
     const fp = 'public/' + outFileNames[i];
 
