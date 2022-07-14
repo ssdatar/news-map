@@ -5,7 +5,7 @@ const Tooltip = ({ feature }) => {
 
   return (
     <div id={`tooltip-${id}`}>
-      <p><strong>County:</strong> { feature.properties.NAME }</p>
+      <h4 className='tooltip__hed'><strong>{ feature.properties.NAME } County</strong></h4>
       <p><strong>Total news sources:</strong> { feature.properties.total_sources }</p>
     </div>
   );
