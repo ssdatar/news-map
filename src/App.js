@@ -167,20 +167,20 @@ function App() {
               <Col xs={6}>
                 {summary && (
                   <div>
-                    <h6>Mainstream news sources</h6>
+                    <h6>News sources</h6>
                     <Sources type='mainstream' county={summary.properties.NAME} sources={summary.properties.source_summary} />
                   </div>
                 )}
               </Col>
               
-              <Col xs={6}>
+              {/*<Col xs={6}>
                 {communitySummary && (
                   <div>
                     <h6>Community news sources</h6>
                     <Sources type='community' county={summary.properties.NAME} sources={summary.properties.community_source_summary} />
                   </div>
                 )}
-              </Col>
+              </Col>*/}
             </Row>
           </Col>
         </Row>

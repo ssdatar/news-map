@@ -23,6 +23,11 @@ function Details(props) {
         sortable: true,
       },
       {
+        name: 'Ownership',
+        selector: row => row.OWTYPE,
+        sortable: false,
+      },
+      {
         name: 'Reach',
         selector: row => formatNumber(+row['REACH (if available)']),
         sortable: false,
@@ -35,14 +40,14 @@ function Details(props) {
         <DataTable 
           className='rdt_Table' 
           columns={columns} 
-          data={data} pagination 
-          paginationPerPage={5}
-          paginationRowsPerPageOptions = {[5, 10, 15, 20, 25, 30]}
+          data={data} pagination
+          paginationPerPage={25}
+          // paginationRowsPerPageOptions = {[5, 10, 15, 20, 25, 30]}
         />
       </div>
     );
   } else {
-    return <h4>This county has no mainstream news sources.</h4>;
+    return <h4>This county has no news sources.</h4>;
   }
 }
 
