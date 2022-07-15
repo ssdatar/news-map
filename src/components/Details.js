@@ -5,12 +5,32 @@ function Details(props) {
   if (props.mainstream.data.length) {
     const { data, header } = props.mainstream;
 
+    // const [filterText, setFilterText] = React.useState('');
+    // const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false);
+    // const filteredItems = fakeUsers.filter(
+    //   item => item.name && item.name.toLowerCase().includes(filterText.toLowerCase()),
+    // );
+
+    // const subHeaderComponentMemo = React.useMemo(() => {
+    //   const handleClear = () => {
+    //     if (filterText) {
+    //       setResetPaginationToggle(!resetPaginationToggle);
+    //       setFilterText('');
+    //     }
+    //   };
+
+    //   return (
+    //     <FilterComponent onFilter={e => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} />
+    //   );
+    // }, [filterText, resetPaginationToggle]);
+
     const columns = [
       {
         name: 'Outlet',
-        cell: row => (
-            <a href={row['WEB']}>{ row['OUTLET'] }</a>
-          )
+        selector: row => row.OUTLET,
+        // cell: row => (
+        //     <a href={row['WEB']}>{ row['OUTLET'] }</a>
+        //   )
       },
       {
         name: 'County',
@@ -30,7 +50,7 @@ function Details(props) {
       {
         name: 'Reach',
         selector: row => formatNumber(+row['REACH (if available)']),
-        sortable: false,
+        sortable: true,
       }
     ];
 

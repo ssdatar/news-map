@@ -8,6 +8,7 @@ import Details from './components/Details';
 import Community from './components/Community';
 import Census from './components/Census';
 import Legend from './components/Legend';
+import { mapColor } from './components/utils';
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -108,23 +109,38 @@ function App() {
     setDetails({ header: hedText[key], data: btnData});
   }
 
+  // console.log(...[].concat(...mapColor()));
+  let colorArray = [
+    'step', 
+    ['number', ['get', 'total_sources']],
+  ];
+
+  mapColor().forEach(pair => {
+    colorArray.push(pair[1]);
+    colorArray.push(pair[0]);
+  });
+
+  colorArray.push('#001181');
+
   const fillColor = {
     id: 'colorado',
     type: 'fill',
     paint: {
-      'fill-outline-color': '#787878',
-      'fill-color': {
-        property: 'total_sources',
-        stops: [
-          [0, 'transparent'],
-          [1, '#feebe2'],
-          [5, '#feebe2'],
-          [10, '#fbb4b9'],
-          [15, '#f768a1'],
-          [20, '#c51b8a'],
-          [25, '#7a0177'],
-        ]
-      },
+      'fill-outline-color': '#d3d3d3',
+      'fill-color': colorArray,
+      // 'fill-color': {
+      //   property: 'total_sources',
+      //   stops: mapColor(),
+      //   // stops: [
+      //   //   [0, 'transparent'],
+      //   //   [1, '#ffffe0'],
+      //   //   [4, '#c9cce8'],
+      //   //   [7, '#949be1'],
+      //   //   [10, '#616ccd'],
+      //   //   [13, '#313fac'],
+      //   //   [16, '#001181'],
+      //   // ]
+      // },
       'fill-opacity': [
         'case',
         ['boolean', ['feature-state', 'hover'], false],
@@ -139,7 +155,7 @@ function App() {
       <Container fluid>
         <Row>
           <h1 className='App__hed bold'>Colorado News Map</h1>
-          <h4 className='App__subhed'>Subhed and description come here. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</h4>
+          {/*<h4 className='App__subhed'>Subhed and description come here. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</h4>*/}
           <div className='map__subhed'>Click or tap on a county to learn more about its news ecosystem.</div>
           <Legend />
         </Row>

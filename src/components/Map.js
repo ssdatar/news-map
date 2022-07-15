@@ -11,6 +11,7 @@ const Map = (props) => {
   const mapContainerRef = useRef(null);
   const popupRef = useRef(new mapboxgl.Popup({ offset: 15 }));
   const { source, fill } = props;
+  console.log(fill.paint);
   const isMobile = window.innerWidth < 600 ? true: false;
   const zoom = isMobile ? 5 : 6;
   const height = isMobile ? 300 : 450;
@@ -23,7 +24,7 @@ const Map = (props) => {
   useEffect(() => {
     const map = new mapboxgl.Map({
       container: mapContainerRef.current,
-      style: 'mapbox://styles/mapbox/dark-v10',
+      style: 'mapbox://styles/mapbox/light-v10',
       center: [-105.358887, 39.113014],
       zoom: zoom,
       minZoom: zoom,
