@@ -46,7 +46,11 @@ function App() {
           setAllData(parsedMain);
           setLookup(lookupRef(parsedMain, 'COUNTY', 'SECTOR'));
           setShapeFile(shapeData);
-          setDetails({ header: 'Statewide news outlets', data: initDetails});
+          
+          setDetails({ 
+            header: 'Statewide news outlets', 
+            data: initDetails 
+          });
         }))
         .catch(errors => {
           console.log(errors);
@@ -88,7 +92,11 @@ function App() {
     };
 
     const btnData = allData.filter(d => d[key] === 'x');
-    setDetails({ header: hedText[key], data: btnData});
+    
+    setDetails({ 
+      header: hedText[key], 
+      data: btnData
+    });
   }
 
   // console.log(...[].concat(...mapColor()));
@@ -110,19 +118,6 @@ function App() {
     paint: {
       'fill-outline-color': '#d3d3d3',
       'fill-color': colorArray,
-      // 'fill-color': {
-      //   property: 'total_sources',
-      //   stops: mapColor(),
-      //   // stops: [
-      //   //   [0, 'transparent'],
-      //   //   [1, '#ffffe0'],
-      //   //   [4, '#c9cce8'],
-      //   //   [7, '#949be1'],
-      //   //   [10, '#616ccd'],
-      //   //   [13, '#313fac'],
-      //   //   [16, '#001181'],
-      //   // ]
-      // },
       'fill-opacity': [
         'case',
         ['boolean', ['feature-state', 'hover'], false],
@@ -169,16 +164,7 @@ function App() {
                     <Sources type='mainstream' county={summary.properties.NAME} sources={summary.properties.source_summary} />
                   </div>
                 )}
-              </Col>
-              
-              {/*<Col xs={6}>
-                {communitySummary && (
-                  <div>
-                    <h6>Community news sources</h6>
-                    <Sources type='community' county={summary.properties.NAME} sources={summary.properties.community_source_summary} />
-                  </div>
-                )}
-              </Col>*/}
+              </Col>              
             </Row>
           </Col>
         </Row>
