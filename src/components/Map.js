@@ -14,17 +14,29 @@ const Map = (props) => {
   const isMobile = window.innerWidth < 600 ? true: false;
   const zoom = isMobile ? 5 : 6;
   const height = isMobile ? 300 : 450;
+  const bounds = [
+    [36.34551832917399, -109.85188785617123], // southwestern corner of the bounds
+    [41.77721285520039, -100.80719442257701] // northeastern corner of the bounds
+  ].map(d => d.reverse());
 
   // Initialize map when component mounts
   useEffect(() => {
     const map = new mapboxgl.Map({
       container: mapContainerRef.current,
-      style: 'mapbox://styles/mapbox/dark-v10',
+      style: 'mapbox://styles/mapbox/light-v10',
       center: [-105.358887, 39.113014],
       zoom: zoom,
       minZoom: zoom,
-      maxZoom: 9
+      maxZoom: 6,
+      maxBounds: bounds
     });
+
+    map.fitBounds(bounds);
+
+    // map.fitBounds([
+    //   [-109.059196, 36.992751], // southwestern corner of the bounds
+    //   [-102.042126,41.001982] // northeastern corner of the bounds
+    // ]);
 
     let hoveredStateId = null;
 
@@ -50,35 +62,58 @@ const Map = (props) => {
         paint: fill.paint,
       });
 
-      // change cursor to pointer when user hovers over a clickable feature
-      map.on('mouseenter', e => {
-        if (e.features.length) {
-          map.getCanvas().style.cursor = 'pointer';
+      // // change cursor to pointer when user hovers over a clickable feature
+      // map.on('mouseenter', e => {
+      //   if (e.features.length) {
+      //     map.getCanvas().style.cursor = 'pointer';
+      //   }
+      // });
+
+      // reset cursor to default when user is no longer hovering over a clickable feature
+      map.on('mouseout', 'colorado', () => {
+        map.getCanvas().style.cursor = '';
+        // resetFeature(hoveredStateId);
+        
+        if (hoveredStateId) {
+          resetFeature(hoveredStateId);
+          popupRef.current.remove();  
         }
       });
 
-      // reset cursor to default when user is no longer hovering over a clickable feature
-      map.on('mouseleave', () => {
-        map.getCanvas().style.cursor = '';
+      // add tooltip when users mouse move over a point
+      map.on('mousemove', 'colorado', e => {
+        const features = map.queryRenderedFeatures(e.point);
+        
+        if (features.length > 0) {
+          map.getCanvas().style.cursor = 'pointer';
+          
+          const feature = features[0];
+          
+          // create popup node
+          const popupNode = document.createElement('div');
+          ReactDOM.render(<Tooltip feature={feature} />, popupNode);
+          
+          popupRef.current
+            .setLngLat(e.lngLat)
+            .setDOMContent(popupNode)
+            .addTo(map);
+
+          // props.passData(feature);
+
+          if (hoveredStateId && feature.properties.total_sources > 0) {
+            resetFeature(hoveredStateId);
+          }
+          hoveredStateId = feature.id;
+
+          map.setFeatureState({
+            source: 'colorado',
+            id: hoveredStateId,
+          },
+          {
+            hover: true,
+          });
+        }
       });
-
-      // // add tooltip when users mouse move over a point
-      // map.on('mousemove', e => {
-      //   const features = map.queryRenderedFeatures(e.point);
-      //   if (features.length) {
-      //     const feature = features[0];
-
-      //     // Create tooltip node
-      //     const tooltipNode = document.createElement('div');
-      //     ReactDOM.createRoot(<Tooltip feature={feature} />, tooltipNode);
-
-      //     // Set tooltip on map
-      //     tooltipRef.current
-      //       .setLngLat(e.lngLat)
-      //       .setDOMContent(tooltipNode)
-      //       .addTo(map);
-      //   }
-      // });
 
       map.on('click', 'colorado', (e) => {
         const features = map.queryRenderedFeatures(e.point, {

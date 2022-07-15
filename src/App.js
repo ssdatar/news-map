@@ -8,6 +8,7 @@ import Details from './components/Details';
 import Community from './components/Community';
 import Census from './components/Census';
 import Legend from './components/Legend';
+import { mapColor } from './components/utils';
 
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -16,7 +17,7 @@ import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 
 import axios from 'axios';
-import { addData, processSheet, lookupRef, otherSheet } from './utils';
+import { addData, processSheet, lookupRef } from './utils';
 
 import './App.scss';
 
@@ -34,22 +35,22 @@ function App() {
   useEffect(() => {
     function getData() {
       const mainSheet = axios.get('mainstream.json');
-      const nonTraditional = axios.get('community.json')
       const geoJson = axios.get('map.json');
 
-      axios.all([mainSheet, nonTraditional, geoJson])
+      axios.all([mainSheet, geoJson])
         .then(axios.spread((...responses) => {
           const parsedMain = processSheet(responses[0].data.data);
-          const processedNonTrad = otherSheet(responses[1].data.data);
-          const shapeData = addData(responses[2].data, parsedMain, processedNonTrad);
+          const shapeData = addData(responses[1].data, parsedMain);
           const initDetails = parsedMain.filter(d => d.STATEWIDE === 'x');
           
           setAllData(parsedMain);
           setLookup(lookupRef(parsedMain, 'COUNTY', 'SECTOR'));
           setShapeFile(shapeData);
-          setNonTrad(processedNonTrad);
-          setNtLookup(lookupRef(processedNonTrad, 'county', 'type'));
-          setDetails({ header: 'Statewide news outlets', data: initDetails});
+          
+          setDetails({ 
+            header: 'Statewide news outlets', 
+            data: initDetails 
+          });
         }))
         .catch(errors => {
           console.log(errors);
@@ -70,30 +71,16 @@ function App() {
       f.properties.source_summary = f.properties.source_summary.sort((a, b) => b[1] - a[1]);
     }
     setSummary(f);
-    
-    if (ntLookup.get(f.properties.NAME)) {
-      f.properties.community_source_summary = [];
       
-      ntLookup.get(f.properties.NAME).forEach((v, k) => {
-        f.properties.community_source_summary.push([k, v.length]);
-      });
-      f.properties.community_source_summary = f.properties.community_source_summary.sort(((a, b) => b[1] - a[1]));
-    }
-    setCommunitySummary(f);
-    
     const sourceDetails = allData.filter(d => d.COUNTY === f.properties.NAME);
-    const communityDetails = nonTrad.filter(d => d.county === f.properties.NAME);
-    
+      
     if (sourceDetails.length) {
-      setDetails({ header: `Mainstream news sources in ${f.properties.NAME} County`, data: sourceDetails});
+      setDetails({ 
+        header: `News sources in ${f.properties.NAME} County`, 
+        data: sourceDetails
+      });
     } else {
       setDetails({ header: '', data: []});
-    }
-
-    if (communityDetails.length) {
-      setCommunity({header: 'Community news sources', data: communityDetails });
-    } else {
-      setCommunity({ header: '', data: []});
     }
   };
 
@@ -105,26 +92,32 @@ function App() {
     };
 
     const btnData = allData.filter(d => d[key] === 'x');
-    setDetails({ header: hedText[key], data: btnData});
+    
+    setDetails({ 
+      header: hedText[key], 
+      data: btnData
+    });
   }
+
+  // console.log(...[].concat(...mapColor()));
+  let colorArray = [
+    'step', 
+    ['number', ['get', 'total_sources']],
+  ];
+
+  mapColor().forEach(pair => {
+    colorArray.push(pair[1]);
+    colorArray.push(pair[0]);
+  });
+
+  colorArray.push('#001181');
 
   const fillColor = {
     id: 'colorado',
     type: 'fill',
     paint: {
-      'fill-outline-color': '#787878',
-      'fill-color': {
-        property: 'total_sources',
-        stops: [
-          [0, 'transparent'],
-          [1, '#feebe2'],
-          [5, '#feebe2'],
-          [10, '#fbb4b9'],
-          [15, '#f768a1'],
-          [20, '#c51b8a'],
-          [25, '#7a0177'],
-        ]
-      },
+      'fill-outline-color': '#d3d3d3',
+      'fill-color': colorArray,
       'fill-opacity': [
         'case',
         ['boolean', ['feature-state', 'hover'], false],
@@ -139,7 +132,7 @@ function App() {
       <Container fluid>
         <Row>
           <h1 className='App__hed bold'>Colorado News Map</h1>
-          <h4 className='App__subhed'>Subhed and description come here. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</h4>
+          {/*<h4 className='App__subhed'>Subhed and description come here. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</h4>*/}
           <div className='map__subhed'>Click or tap on a county to learn more about its news ecosystem.</div>
           <Legend />
         </Row>
@@ -167,20 +160,11 @@ function App() {
               <Col xs={6}>
                 {summary && (
                   <div>
-                    <h6>Mainstream news sources</h6>
+                    <h6>News sources</h6>
                     <Sources type='mainstream' county={summary.properties.NAME} sources={summary.properties.source_summary} />
                   </div>
                 )}
-              </Col>
-              
-              <Col xs={6}>
-                {communitySummary && (
-                  <div>
-                    <h6>Community news sources</h6>
-                    <Sources type='community' county={summary.properties.NAME} sources={summary.properties.community_source_summary} />
-                  </div>
-                )}
-              </Col>
+              </Col>              
             </Row>
           </Col>
         </Row>
@@ -200,15 +184,9 @@ function App() {
         <div className="spacer"></div>
 
         <Row>
-          <Col xs={12} sm={6}>
+          <Col xs={12} sm={8}>
             { details && 
               (<Details data-testid='statewide' mainstream={ details } />)
-            }
-          </Col>
-
-          <Col xs={12} sm={6}>
-            { community && 
-              (<Community community={ community } />)
             }
           </Col>
         </Row>
