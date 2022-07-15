@@ -11,7 +11,6 @@ const Map = (props) => {
   const mapContainerRef = useRef(null);
   const popupRef = useRef(new mapboxgl.Popup({ offset: 15 }));
   const { source, fill } = props;
-  console.log(fill.paint);
   const isMobile = window.innerWidth < 600 ? true: false;
   const zoom = isMobile ? 5 : 6;
   const height = isMobile ? 300 : 450;

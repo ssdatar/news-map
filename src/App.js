@@ -17,7 +17,7 @@ import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 
 import axios from 'axios';
-import { addData, processSheet, lookupRef, otherSheet } from './utils';
+import { addData, processSheet, lookupRef } from './utils';
 
 import './App.scss';
 
@@ -35,21 +35,17 @@ function App() {
   useEffect(() => {
     function getData() {
       const mainSheet = axios.get('mainstream.json');
-      const nonTraditional = axios.get('community.json')
       const geoJson = axios.get('map.json');
 
-      axios.all([mainSheet, nonTraditional, geoJson])
+      axios.all([mainSheet, geoJson])
         .then(axios.spread((...responses) => {
           const parsedMain = processSheet(responses[0].data.data);
-          const processedNonTrad = otherSheet(responses[1].data.data);
-          const shapeData = addData(responses[2].data, parsedMain, processedNonTrad);
+          const shapeData = addData(responses[1].data, parsedMain);
           const initDetails = parsedMain.filter(d => d.STATEWIDE === 'x');
           
           setAllData(parsedMain);
           setLookup(lookupRef(parsedMain, 'COUNTY', 'SECTOR'));
           setShapeFile(shapeData);
-          setNonTrad(processedNonTrad);
-          setNtLookup(lookupRef(processedNonTrad, 'county', 'type'));
           setDetails({ header: 'Statewide news outlets', data: initDetails});
         }))
         .catch(errors => {
@@ -71,30 +67,16 @@ function App() {
       f.properties.source_summary = f.properties.source_summary.sort((a, b) => b[1] - a[1]);
     }
     setSummary(f);
-    
-    if (ntLookup.get(f.properties.NAME)) {
-      f.properties.community_source_summary = [];
       
-      ntLookup.get(f.properties.NAME).forEach((v, k) => {
-        f.properties.community_source_summary.push([k, v.length]);
-      });
-      f.properties.community_source_summary = f.properties.community_source_summary.sort(((a, b) => b[1] - a[1]));
-    }
-    setCommunitySummary(f);
-    
     const sourceDetails = allData.filter(d => d.COUNTY === f.properties.NAME);
-    const communityDetails = nonTrad.filter(d => d.county === f.properties.NAME);
-    
+      
     if (sourceDetails.length) {
-      setDetails({ header: `Mainstream news sources in ${f.properties.NAME} County`, data: sourceDetails});
+      setDetails({ 
+        header: `News sources in ${f.properties.NAME} County`, 
+        data: sourceDetails
+      });
     } else {
       setDetails({ header: '', data: []});
-    }
-
-    if (communityDetails.length) {
-      setCommunity({header: 'Community news sources', data: communityDetails });
-    } else {
-      setCommunity({ header: '', data: []});
     }
   };
 

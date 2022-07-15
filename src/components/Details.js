@@ -1,6 +1,20 @@
 import DataTable from 'react-data-table-component';
 import { formatNumber } from './utils';
 
+const sortReach = (rowA, rowB) => {
+  const a = rowA['REACH (if available)'];
+  const b = rowB['REACH (if available)'];
+
+  if (a > b) {
+    return 1;
+  }
+
+  if (b > a) {
+    return -1;
+  }
+  return 0;
+};
+
 function Details(props) {
   if (props.mainstream.data.length) {
     const { data, header } = props.mainstream;
@@ -49,8 +63,9 @@ function Details(props) {
       },
       {
         name: 'Reach',
-        selector: row => formatNumber(+row['REACH (if available)']),
+        selector: row => (row['REACH (if available)']),
         sortable: true,
+        sortFunction: sortReach
       }
     ];
 
@@ -62,7 +77,7 @@ function Details(props) {
           columns={columns} 
           data={data} pagination
           paginationPerPage={25}
-          // paginationRowsPerPageOptions = {[5, 10, 15, 20, 25, 30]}
+          paginationRowsPerPageOptions = {[5, 10, 15, 20, 25, 30]}
         />
       </div>
     );
