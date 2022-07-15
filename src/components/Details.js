@@ -5,14 +5,19 @@ const sortReach = (rowA, rowB) => {
   const a = rowA['REACH (if available)'];
   const b = rowB['REACH (if available)'];
 
-  if (a > b) {
-    return 1;
+  if (isNaN(a)) {
+    if (isNaN(b)) {  // a and b are strings
+      return a.localeCompare(b);
+    } else {         // a string and b number
+        return 1;  // a > b
+      }
+  } else {
+      if (isNaN(b)) {  // a number and b string
+        return -1;  // a < b
+      } else {         // a and b are numbers
+        return parseInt(a) - parseInt(b);
+      }
   }
-
-  if (b > a) {
-    return -1;
-  }
-  return 0;
 };
 
 function Details(props) {
@@ -63,7 +68,7 @@ function Details(props) {
       },
       {
         name: 'Reach',
-        selector: row => (row['REACH (if available)']),
+        selector: row => formatNumber(row['REACH (if available)']),
         sortable: true,
         sortFunction: sortReach
       }
