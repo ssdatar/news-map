@@ -68,6 +68,7 @@ async function main() {
     data.forEach(row => {
       row['OWTYPE'] = ownerType(row['OWTYPE'])
       row['REACH (if available)'] = row['REACH (if available)'].length ? +row['REACH (if available)'] : 0;
+      row['NON-ENGLISH/ BIPOC-SERVING'] = row['NON-ENGLISH/ BIPOC-SERVING'].length ? row['NON-ENGLISH/ BIPOC-SERVING'] : 'English';
     });
     
     const fp = 'public/' + outFileNames[i];
