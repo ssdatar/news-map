@@ -5,7 +5,6 @@ import {
 import Map from './components/Map';
 import Sources from './components/Sources';
 import Details from './components/Details';
-import Community from './components/Community';
 import Census from './components/Census';
 import Legend from './components/Legend';
 import { mapColor } from './components/utils';
@@ -15,11 +14,15 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
+import Form from 'react-bootstrap/Form';
 
 import axios from 'axios';
 import { addData, processSheet, lookupRef } from './utils';
 
+import { Typeahead } from 'react-bootstrap-typeahead'; 
+
 import './App.scss';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 function App() {
   const [allData, setAllData] = useState(null);
@@ -28,9 +31,10 @@ function App() {
   const [nonTrad, setNonTrad] = useState(null);
   const [ntLookup, setNtLookup] = useState(null);
   const [summary, setSummary] = useState(null);
-  const [communitySummary, setCommunitySummary] = useState(null);
   const [details, setDetails] = useState(null);
-  const [community, setCommunity] = useState(null);
+
+  const [langOptions, setLangOptions] = useState([]);
+  const [selectLanguage, setSelectLanguage] = useState([]);
 
   useEffect(() => {
     function getData() {
@@ -46,6 +50,10 @@ function App() {
           setAllData(parsedMain);
           setLookup(lookupRef(parsedMain, 'COUNTY', 'SECTOR'));
           setShapeFile(shapeData);
+
+          const langs = [...new Set(parsedMain.map(d => d['NON-ENGLISH/ BIPOC-SERVING']))];
+          console.log(langs);
+          setLangOptions(langs)
           
           setDetails({ 
             header: 'Statewide news outlets', 
@@ -59,7 +67,7 @@ function App() {
     getData();
   }, []);
 
-  const updateTable = (f) => {
+  const mapFilter = (f) => {
     if(lookup.get(f.properties.NAME)) {
       const countySourceSummary = lookup.get(f.properties.NAME);
       f.properties.source_summary = [];      
@@ -84,9 +92,11 @@ function App() {
     }
   };
 
+  
+
   const buttonHandler = (e, key) => {
     const hedText = {
-      'STATEWIDE': 'Statewide mainstream outlets',
+      'STATEWIDE': 'Statewide news outlets',
       'COLab': 'COLab news outlets',
       'CPA': 'CPA news outlets'
     };
@@ -96,6 +106,15 @@ function App() {
     setDetails({ 
       header: hedText[key], 
       data: btnData
+    });
+  }
+
+  const langChange = (selected) => {
+    setSelectLanguage(selected);
+    const refreshData = allData.filter(d => selected.indexOf(d['NON-ENGLISH/ BIPOC-SERVING']) > -1);
+    setDetails({
+      header: '',
+      data: refreshData
     });
   }
 
@@ -141,7 +160,7 @@ function App() {
             <Map 
               source={shapeFile} 
               fill={ fillColor }
-              passData={updateTable}
+              passData={ mapFilter }
               data-testid='map'
             >
             </Map>
@@ -177,9 +196,43 @@ function App() {
               <Button onClick={e => buttonHandler(e, 'STATEWIDE') } variant="outline-dark" className='filter-table-btn'>Statewide publications</Button>
               <Button onClick= {e => buttonHandler(e, 'COLab') } variant="outline-dark" className='filter-table-btn'>COLab publications</Button>
               <Button onClick= {e => buttonHandler(e, 'CPA') } variant="outline-dark" className='filter-table-btn'>CPA publications</Button>
-            </div>  
+            </div>
           </Col>
         </Row>
+
+        <div className="table-filters">
+          <Row>
+            <Col xs={4}>
+              <Form.Group style={{ marginTop: '20px' }}>
+                <Form.Label>Select a language</Form.Label>
+                <Typeahead
+                  id="table-language-filter"
+                  labelKey="name"
+                  multiple
+                  onChange={langChange}
+                  options={langOptions}
+                  placeholder="Select a language"
+                  selected={selectLanguage}
+                />
+              </Form.Group>
+            </Col>
+
+            <Col xs={4}>
+              <Form.Group style={{ marginTop: '20px' }}>
+                <Form.Label>Select a county</Form.Label>
+                <Typeahead
+                  id="table-language-filter"
+                  labelKey="name"
+                  multiple
+                  onChange={langChange}
+                  options={langOptions}
+                  placeholder="Select a language"
+                  selected={selectLanguage}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+        </div>
 
         <div className="spacer"></div>
 

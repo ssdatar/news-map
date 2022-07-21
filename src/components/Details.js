@@ -5,6 +5,7 @@ const sortReach = (rowA, rowB) => {
   const a = rowA['REACH (if available)'];
   const b = rowB['REACH (if available)'];
 
+  // https://stackoverflow.com/questions/30528541/javascript-sort-array-of-mixed-data-type
   if (isNaN(a)) {
     if (isNaN(b)) {  // a and b are strings
       return a.localeCompare(b);
@@ -60,6 +61,12 @@ function Details(props) {
         name: 'Sector',
         selector: row => row.SECTOR,
         sortable: true,
+      },
+      {
+        name: 'Language',
+        selector: row => row['NON-ENGLISH/ BIPOC-SERVING'],
+        // sortable: true,
+        // sortFunction: sortReach
       },
       {
         name: 'Ownership',
