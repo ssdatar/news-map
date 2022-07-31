@@ -36,14 +36,20 @@ function App() {
   const [filterOptions, setFilterOptions] = useState({
     language: [],
     county: [],
-    owner: [],
+    ownership: [],
   });
 
-  const [langOptions, setLangOptions] = useState([]);
-  const [selectLanguage, setSelectLanguage] = useState([]);
+  const [formOptions, setFormOptions] = useState({
+    language: [],
+    county: [],
+    ownership: [],
+  });
 
-  const [countyOptions, setCountyOptions] = useState([]);
-  const [selectCounty, setSelectCounty] = useState([]);
+  // const [langOptions, setLangOptions] = useState([]);
+  // const [selectLanguage, setSelectLanguage] = useState([]);
+
+  // const [countyOptions, setCountyOptions] = useState([]);
+  // const [selectCounty, setSelectCounty] = useState([]);
 
   useEffect(() => {
     function getData() {
@@ -60,11 +66,20 @@ function App() {
           setLookup(lookupRef(parsedMain, 'COUNTY', 'SECTOR'));
           setShapeFile(shapeData);
 
-          const langs = [...new Set(parsedMain.map(d => d['NON-ENGLISH/ BIPOC-SERVING']))];
-          setLangOptions(langs);
+          setFormOptions({
+            language: [...new Set(parsedMain.map(d => d['NON-ENGLISH/ BIPOC-SERVING']))],
+            county: [...new Set(parsedMain.map(d => d.COUNTY))],
+            ownership: [...new Set(parsedMain.map(d => d.OWTYPE))],
+          });
 
-          const counties = [...new Set(parsedMain.map(d => d.COUNTY))];
-          setCountyOptions(counties);
+          // const langs = [...new Set(parsedMain.map(d => d['NON-ENGLISH/ BIPOC-SERVING']))];
+          // setLangOptions(langs);
+
+          // const counties = [...new Set(parsedMain.map(d => d.COUNTY))];
+          // setCountyOptions(counties);
+
+          // const ownership = [...new Set(parsedMain.map(d => d.OWTYPE))];
+          // setCountyOptions(ownership);
 
           setDetails({ 
             header: 'Statewide news outlets', 
@@ -134,7 +149,7 @@ function App() {
       const filterKeys = {
         county: 'COUNTY',
         language: 'NON-ENGLISH/ BIPOC-SERVING',
-        // owner: 'OWTYPE'
+        ownership: 'OWTYPE'
       };
 
       const toFilter = Object.keys(filterOptions)
@@ -158,7 +173,7 @@ function App() {
       console.log(filterValues.language.includes('English'));
 
       const refreshData = allData.filter(row => 
-        filterValues.county.includes(row['COUNTY']) && filterValues.language.includes(row['NON-ENGLISH/ BIPOC-SERVING'])
+        filterValues.county.includes(row['COUNTY']) && filterValues.language.includes(row['NON-ENGLISH/ BIPOC-SERVING']) && filterValues.ownership.includes(row['OWTYPE'])
       );
 
       console.log(refreshData);
@@ -255,7 +270,7 @@ function App() {
 
         <div className="table-filters">
           <Row>
-            <Col xs={4}>
+            <Col xs={3}>
               <Form.Group style={{ marginTop: '20px' }}>
                 <Form.Label>Language</Form.Label>
                 <Typeahead
@@ -264,24 +279,39 @@ function App() {
                   multiple
                   // onInputChange={(text, string) => {console.log(text,string)}}
                   onChange={ (sel) => filterChange('language', sel) }
-                  options={langOptions}
+                  options={formOptions.language}
                   placeholder="Select a language"
                   selected={filterOptions.language}
                 />
               </Form.Group>
             </Col>
 
-            <Col xs={4}>
+            <Col xs={3}>
               <Form.Group style={{ marginTop: '20px' }}>
                 <Form.Label>County</Form.Label>
                 <Typeahead
-                  id="table-language-filter"
-                  labelKey="name"
+                  id="table-county-filter"
+                  labelKey="county"
                   multiple
                   onChange={(selected) => filterChange('county', selected)}
-                  options={countyOptions}
-                  placeholder="Select a language"
+                  options={formOptions.county}
+                  placeholder="Select a county"
                   selected={filterOptions.county}
+                />
+              </Form.Group>
+            </Col>
+
+            <Col xs={3}>
+              <Form.Group style={{ marginTop: '20px' }}>
+                <Form.Label>Ownership</Form.Label>
+                <Typeahead
+                  id="table-ownership-filter"
+                  labelKey="owner"
+                  multiple
+                  onChange={(selected) => filterChange('ownership', selected)}
+                  options={formOptions.ownership}
+                  placeholder="Ownership type"
+                  selected={filterOptions.ownership}
                 />
               </Form.Group>
             </Col>
