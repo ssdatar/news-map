@@ -21,28 +21,22 @@ const sortReach = (rowA, rowB) => {
   }
 };
 
+const MissionComponent = ({ data }) => {
+   return(
+      <div className='expanded'>
+        <p className='expanded__mission'>{ data.MISSION }</p>
+      </div>
+    )
+};
+
 function Details(props) {
   if (props.mainstream.data.length) {
     const { data, header } = props.mainstream;
 
-    // const [filterText, setFilterText] = React.useState('');
-    // const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false);
-    // const filteredItems = fakeUsers.filter(
-    //   item => item.name && item.name.toLowerCase().includes(filterText.toLowerCase()),
-    // );
-
-    // const subHeaderComponentMemo = React.useMemo(() => {
-    //   const handleClear = () => {
-    //     if (filterText) {
-    //       setResetPaginationToggle(!resetPaginationToggle);
-    //       setFilterText('');
-    //     }
-    //   };
-
-    //   return (
-    //     <FilterComponent onFilter={e => setFilterText(e.target.value)} onClear={handleClear} filterText={filterText} />
-    //   );
-    // }, [filterText, resetPaginationToggle]);
+    const tableDataItems = data.map(item => {
+      let disabled = item.MISSION.length > 0 ? false : true;
+      return { ...item, disabled };
+    })
 
     const columns = [
       {
@@ -78,7 +72,13 @@ function Details(props) {
         selector: row => formatNumber(row['REACH (if available)']),
         sortable: true,
         sortFunction: sortReach
-      }
+      },
+      // {
+      //   name: 'Mission',
+      //   selector: row => row.MISSION
+      //   // sortable: true,
+      //   // sortFunction: sortReach
+      // }
     ];
 
     return (
@@ -86,10 +86,14 @@ function Details(props) {
         <h4 className='details__hed'>{ header }</h4>
         <DataTable 
           className='rdt_Table' 
-          columns={columns} 
-          data={data} pagination
+          columns={ columns } 
+          data={ tableDataItems } 
+          pagination
           paginationPerPage={25}
           paginationRowsPerPageOptions = {[5, 10, 15, 20, 25, 30]}
+          expandableRows 
+          expandableRowsComponent={ MissionComponent }
+          expandableRowDisabled={ row => row.disabled }
         />
       </div>
     );
