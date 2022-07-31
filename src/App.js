@@ -33,8 +33,17 @@ function App() {
   const [summary, setSummary] = useState(null);
   const [details, setDetails] = useState(null);
 
+  const [filterOptions, setFilterOptions] = useState({
+    language: [],
+    county: [],
+    owner: [],
+  });
+
   const [langOptions, setLangOptions] = useState([]);
   const [selectLanguage, setSelectLanguage] = useState([]);
+
+  const [countyOptions, setCountyOptions] = useState([]);
+  const [selectCounty, setSelectCounty] = useState([]);
 
   useEffect(() => {
     function getData() {
@@ -52,9 +61,11 @@ function App() {
           setShapeFile(shapeData);
 
           const langs = [...new Set(parsedMain.map(d => d['NON-ENGLISH/ BIPOC-SERVING']))];
-          console.log(langs);
-          setLangOptions(langs)
-          
+          setLangOptions(langs);
+
+          const counties = [...new Set(parsedMain.map(d => d.COUNTY))];
+          setCountyOptions(counties);
+
           setDetails({ 
             header: 'Statewide news outlets', 
             data: initDetails 
@@ -92,8 +103,6 @@ function App() {
     }
   };
 
-  
-
   const buttonHandler = (e, key) => {
     const hedText = {
       'STATEWIDE': 'Statewide news outlets',
@@ -109,14 +118,58 @@ function App() {
     });
   }
 
-  const langChange = (selected) => {
-    setSelectLanguage(selected);
-    const refreshData = allData.filter(d => selected.indexOf(d['NON-ENGLISH/ BIPOC-SERVING']) > -1);
-    setDetails({
-      header: '',
-      data: refreshData
+  const filterChange = (key, value) => {
+    const updatedValues = {};
+    updatedValues[key] = value;
+    
+    setFilterOptions((prevState) => {
+      return {...prevState, ...updatedValues};
     });
-  }
+  };
+
+  useEffect(() => {
+    if (allData) {
+      const { county, language } = filterOptions;
+      
+      const filterKeys = {
+        county: 'COUNTY',
+        language: 'NON-ENGLISH/ BIPOC-SERVING',
+        // owner: 'OWTYPE'
+      };
+
+      const toFilter = Object.keys(filterOptions)
+        .filter(k => filterOptions[k].length > 0)
+        .map(d => filterKeys[d]);
+
+      let filterValues = {};
+
+      Object.keys(filterKeys).forEach(fk => {
+        if (filterOptions[fk].length) {
+          filterValues[fk] = filterOptions[fk];
+        } else {
+          filterValues[fk] = [...new Set(allData.map(d => d[filterKeys[fk]]))];
+        }
+      });
+
+      console.log(filterValues);
+      console.log('filterOptions', filterOptions);
+      console.log('toFilter',toFilter);
+
+      console.log(filterValues.language.includes('English'));
+
+      const refreshData = allData.filter(row => 
+        filterValues.county.includes(row['COUNTY']) && filterValues.language.includes(row['NON-ENGLISH/ BIPOC-SERVING'])
+      );
+
+      console.log(refreshData);
+      
+      setDetails({
+        header: '',
+        data: refreshData
+      });
+    }
+
+  }, [filterOptions]);
 
   // console.log(...[].concat(...mapColor()));
   let colorArray = [
@@ -204,30 +257,31 @@ function App() {
           <Row>
             <Col xs={4}>
               <Form.Group style={{ marginTop: '20px' }}>
-                <Form.Label>Select a language</Form.Label>
+                <Form.Label>Language</Form.Label>
                 <Typeahead
                   id="table-language-filter"
                   labelKey="name"
                   multiple
-                  onChange={langChange}
+                  // onInputChange={(text, string) => {console.log(text,string)}}
+                  onChange={ (sel) => filterChange('language', sel) }
                   options={langOptions}
                   placeholder="Select a language"
-                  selected={selectLanguage}
+                  selected={filterOptions.language}
                 />
               </Form.Group>
             </Col>
 
             <Col xs={4}>
               <Form.Group style={{ marginTop: '20px' }}>
-                <Form.Label>Select a county</Form.Label>
+                <Form.Label>County</Form.Label>
                 <Typeahead
                   id="table-language-filter"
                   labelKey="name"
                   multiple
-                  onChange={langChange}
-                  options={langOptions}
+                  onChange={(selected) => filterChange('county', selected)}
+                  options={countyOptions}
                   placeholder="Select a language"
-                  selected={selectLanguage}
+                  selected={filterOptions.county}
                 />
               </Form.Group>
             </Col>
