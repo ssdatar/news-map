@@ -5,7 +5,6 @@ import {
 import Map from './components/Map';
 import Sources from './components/Sources';
 import Details from './components/Details';
-import Community from './components/Community';
 import Census from './components/Census';
 import Legend from './components/Legend';
 import { mapColor } from './components/utils';
@@ -15,11 +14,15 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
+import Form from 'react-bootstrap/Form';
 
 import axios from 'axios';
 import { addData, processSheet, lookupRef } from './utils';
 
+import { Typeahead } from 'react-bootstrap-typeahead'; 
+
 import './App.scss';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 function App() {
   const [allData, setAllData] = useState(null);
@@ -28,9 +31,25 @@ function App() {
   const [nonTrad, setNonTrad] = useState(null);
   const [ntLookup, setNtLookup] = useState(null);
   const [summary, setSummary] = useState(null);
-  const [communitySummary, setCommunitySummary] = useState(null);
   const [details, setDetails] = useState(null);
-  const [community, setCommunity] = useState(null);
+
+  const [filterOptions, setFilterOptions] = useState({
+    language: [],
+    county: [],
+    ownership: [],
+  });
+
+  const [formOptions, setFormOptions] = useState({
+    language: [],
+    county: [],
+    ownership: [],
+  });
+
+  // const [langOptions, setLangOptions] = useState([]);
+  // const [selectLanguage, setSelectLanguage] = useState([]);
+
+  // const [countyOptions, setCountyOptions] = useState([]);
+  // const [selectCounty, setSelectCounty] = useState([]);
 
   useEffect(() => {
     function getData() {
@@ -46,7 +65,22 @@ function App() {
           setAllData(parsedMain);
           setLookup(lookupRef(parsedMain, 'COUNTY', 'SECTOR'));
           setShapeFile(shapeData);
-          
+
+          setFormOptions({
+            language: [...new Set(parsedMain.map(d => d['NON-ENGLISH/ BIPOC-SERVING']))],
+            county: [...new Set(parsedMain.map(d => d.COUNTY))],
+            ownership: [...new Set(parsedMain.map(d => d.OWTYPE))],
+          });
+
+          // const langs = [...new Set(parsedMain.map(d => d['NON-ENGLISH/ BIPOC-SERVING']))];
+          // setLangOptions(langs);
+
+          // const counties = [...new Set(parsedMain.map(d => d.COUNTY))];
+          // setCountyOptions(counties);
+
+          // const ownership = [...new Set(parsedMain.map(d => d.OWTYPE))];
+          // setCountyOptions(ownership);
+
           setDetails({ 
             header: 'Statewide news outlets', 
             data: initDetails 
@@ -59,7 +93,7 @@ function App() {
     getData();
   }, []);
 
-  const updateTable = (f) => {
+  const mapFilter = (f) => {
     if(lookup.get(f.properties.NAME)) {
       const countySourceSummary = lookup.get(f.properties.NAME);
       f.properties.source_summary = [];      
@@ -86,7 +120,7 @@ function App() {
 
   const buttonHandler = (e, key) => {
     const hedText = {
-      'STATEWIDE': 'Statewide mainstream outlets',
+      'STATEWIDE': 'Statewide news outlets',
       'COLab': 'COLab news outlets',
       'CPA': 'CPA news outlets'
     };
@@ -98,6 +132,59 @@ function App() {
       data: btnData
     });
   }
+
+  const filterChange = (key, value) => {
+    const updatedValues = {};
+    updatedValues[key] = value;
+    
+    setFilterOptions((prevState) => {
+      return {...prevState, ...updatedValues};
+    });
+  };
+
+  useEffect(() => {
+    if (allData) {
+      const { county, language } = filterOptions;
+      
+      const filterKeys = {
+        county: 'COUNTY',
+        language: 'NON-ENGLISH/ BIPOC-SERVING',
+        ownership: 'OWTYPE'
+      };
+
+      const toFilter = Object.keys(filterOptions)
+        .filter(k => filterOptions[k].length > 0)
+        .map(d => filterKeys[d]);
+
+      let filterValues = {};
+
+      Object.keys(filterKeys).forEach(fk => {
+        if (filterOptions[fk].length) {
+          filterValues[fk] = filterOptions[fk];
+        } else {
+          filterValues[fk] = [...new Set(allData.map(d => d[filterKeys[fk]]))];
+        }
+      });
+
+      console.log(filterValues);
+      console.log('filterOptions', filterOptions);
+      console.log('toFilter',toFilter);
+
+      console.log(filterValues.language.includes('English'));
+
+      const refreshData = allData.filter(row => 
+        filterValues.county.includes(row['COUNTY']) && filterValues.language.includes(row['NON-ENGLISH/ BIPOC-SERVING']) && filterValues.ownership.includes(row['OWTYPE'])
+      );
+
+      console.log(refreshData);
+      
+      setDetails({
+        header: '',
+        data: refreshData
+      });
+    }
+
+  }, [filterOptions]);
 
   // console.log(...[].concat(...mapColor()));
   let colorArray = [
@@ -141,7 +228,7 @@ function App() {
             <Map 
               source={shapeFile} 
               fill={ fillColor }
-              passData={updateTable}
+              passData={ mapFilter }
               data-testid='map'
             >
             </Map>
@@ -177,9 +264,59 @@ function App() {
               <Button onClick={e => buttonHandler(e, 'STATEWIDE') } variant="outline-dark" className='filter-table-btn'>Statewide publications</Button>
               <Button onClick= {e => buttonHandler(e, 'COLab') } variant="outline-dark" className='filter-table-btn'>COLab publications</Button>
               <Button onClick= {e => buttonHandler(e, 'CPA') } variant="outline-dark" className='filter-table-btn'>CPA publications</Button>
-            </div>  
+            </div>
           </Col>
         </Row>
+
+        <div className="table-filters">
+          <Row>
+            <Col xs={3}>
+              <Form.Group style={{ marginTop: '20px' }}>
+                <Form.Label>Language</Form.Label>
+                <Typeahead
+                  id="table-language-filter"
+                  labelKey="name"
+                  multiple
+                  // onInputChange={(text, string) => {console.log(text,string)}}
+                  onChange={ (sel) => filterChange('language', sel) }
+                  options={formOptions.language}
+                  placeholder="Select a language"
+                  selected={filterOptions.language}
+                />
+              </Form.Group>
+            </Col>
+
+            <Col xs={3}>
+              <Form.Group style={{ marginTop: '20px' }}>
+                <Form.Label>County</Form.Label>
+                <Typeahead
+                  id="table-county-filter"
+                  labelKey="county"
+                  multiple
+                  onChange={(selected) => filterChange('county', selected)}
+                  options={formOptions.county}
+                  placeholder="Select a county"
+                  selected={filterOptions.county}
+                />
+              </Form.Group>
+            </Col>
+
+            <Col xs={3}>
+              <Form.Group style={{ marginTop: '20px' }}>
+                <Form.Label>Ownership</Form.Label>
+                <Typeahead
+                  id="table-ownership-filter"
+                  labelKey="owner"
+                  multiple
+                  onChange={(selected) => filterChange('ownership', selected)}
+                  options={formOptions.ownership}
+                  placeholder="Ownership type"
+                  selected={filterOptions.ownership}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+        </div>
 
         <div className="spacer"></div>
 

@@ -137,8 +137,11 @@
     font-size: .95em;
   }
 
-  .community-mission {
-    font-size: .8em;
+  .expanded {
+    &__mission {
+      font-size: .8em;
+      margin-top: .5em;
+    }
   }
 }
 

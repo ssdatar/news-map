@@ -2,7 +2,7 @@ import { mapColor } from './utils';
 
 function Legend() {
   let legendColor = mapColor().concat([[18, '#001181']]);
-  console.log(legendColor)
+  // console.log(legendColor)
 
   const legend = legendColor.map((num, i) => (
     <div className="legend__categ">
