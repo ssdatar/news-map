@@ -81,6 +81,8 @@ function App() {
 
   const mapFilter = (f) => {
     if(lookup.get(f.properties.NAME)) {
+      filterChange('county', [ f.properties.NAME ]);
+
       const countySourceSummary = lookup.get(f.properties.NAME);
       f.properties.source_summary = [];      
 
@@ -133,7 +135,7 @@ function App() {
   const filterChange = (key, value) => {
     const updatedValues = {};
     updatedValues[key] = value;
-    
+  
     setFilterOptions((prevState) => {
       return {...prevState, ...updatedValues};
     });
@@ -340,7 +342,7 @@ function App() {
         <div className="spacer"></div>
 
         <Row>
-          <Col xs={12} sm={8}>
+          <Col xs={12}>
             { details && 
               (<Details data-testid='statewide' mainstream={ details } />)
             }
