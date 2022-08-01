@@ -113,6 +113,12 @@
   display: flex;
 }
 
+.table-filter {
+  &__outlet {
+    margin-top: .5em;
+  }
+}
+
 .filter-table-btn {
   margin-right: .5em;
   background: $btn;

@@ -37,6 +37,7 @@ function App() {
     language: [],
     county: [],
     ownership: [],
+    outlet: '',
   });
 
   const [formOptions, setFormOptions] = useState({
@@ -44,12 +45,6 @@ function App() {
     county: [],
     ownership: [],
   });
-
-  // const [langOptions, setLangOptions] = useState([]);
-  // const [selectLanguage, setSelectLanguage] = useState([]);
-
-  // const [countyOptions, setCountyOptions] = useState([]);
-  // const [selectCounty, setSelectCounty] = useState([]);
 
   useEffect(() => {
     function getData() {
@@ -71,15 +66,6 @@ function App() {
             county: [...new Set(parsedMain.map(d => d.COUNTY))],
             ownership: [...new Set(parsedMain.map(d => d.OWTYPE))],
           });
-
-          // const langs = [...new Set(parsedMain.map(d => d['NON-ENGLISH/ BIPOC-SERVING']))];
-          // setLangOptions(langs);
-
-          // const counties = [...new Set(parsedMain.map(d => d.COUNTY))];
-          // setCountyOptions(counties);
-
-          // const ownership = [...new Set(parsedMain.map(d => d.OWTYPE))];
-          // setCountyOptions(ownership);
 
           setDetails({ 
             header: 'Statewide news outlets', 
@@ -133,6 +119,16 @@ function App() {
     });
   }
 
+  const searchHandler = (e) => {
+    console.log(e.target.value);
+    const searchData = allData.filter(d => d['OUTLET'].toLowerCase().indexOf(e.target.value) > -1);
+
+    setDetails({ 
+      header: '', 
+      data: searchData
+    });
+  };
+
   const filterChange = (key, value) => {
     const updatedValues = {};
     updatedValues[key] = value;
@@ -149,7 +145,8 @@ function App() {
       const filterKeys = {
         county: 'COUNTY',
         language: 'NON-ENGLISH/ BIPOC-SERVING',
-        ownership: 'OWTYPE'
+        ownership: 'OWTYPE',
+        // outlet: 'OUTLET'
       };
 
       const toFilter = Object.keys(filterOptions)
@@ -166,17 +163,20 @@ function App() {
         }
       });
 
-      console.log(filterValues);
-      console.log('filterOptions', filterOptions);
-      console.log('toFilter',toFilter);
+      // console.log(filterValues);
+      // console.log('filterOptions', filterOptions);
+      // console.log('toFilter',toFilter);
 
-      console.log(filterValues.language.includes('English'));
+      // console.log(filterValues.language.includes('English'));
 
       const refreshData = allData.filter(row => 
-        filterValues.county.includes(row['COUNTY']) && filterValues.language.includes(row['NON-ENGLISH/ BIPOC-SERVING']) && filterValues.ownership.includes(row['OWTYPE'])
+        filterValues.county.includes(row['COUNTY']) && 
+        filterValues.language.includes(row['NON-ENGLISH/ BIPOC-SERVING']) && 
+        filterValues.ownership.includes(row['OWTYPE']) 
+        // && row['OUTLET'].toLowerCase().indexOf(filterValues.outlet) > -1
       );
 
-      console.log(refreshData);
+      // console.log(refreshData);
       
       setDetails({
         header: '',
@@ -268,13 +268,14 @@ function App() {
           </Col>
         </Row>
 
-        <div className="table-filters">
+        <div className="table-filter">
           <Row>
             <Col xs={3}>
               <Form.Group style={{ marginTop: '20px' }}>
                 <Form.Label>Language</Form.Label>
                 <Typeahead
                   id="table-language-filter"
+                  className='table-filter__language'
                   labelKey="name"
                   multiple
                   // onInputChange={(text, string) => {console.log(text,string)}}
@@ -291,6 +292,7 @@ function App() {
                 <Form.Label>County</Form.Label>
                 <Typeahead
                   id="table-county-filter"
+                  className='table-filter__county'
                   labelKey="county"
                   multiple
                   onChange={(selected) => filterChange('county', selected)}
@@ -307,12 +309,27 @@ function App() {
                 <Typeahead
                   id="table-ownership-filter"
                   labelKey="owner"
+                  className='table-filter__owner'
                   multiple
                   onChange={(selected) => filterChange('ownership', selected)}
                   options={formOptions.ownership}
                   placeholder="Ownership type"
                   selected={filterOptions.ownership}
                 />
+              </Form.Group>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col xs={4}>
+              <Form.Group className='table-filter__outlet'>
+                <Form.Label>Search for an news organization</Form.Label>
+                <Form.Control type="text" placeholder="Search" 
+                  onChange={ searchHandler }
+                />
+                {/*<Form.Text className="text-muted">
+                  We'll never share your email with anyone else.
+                </Form.Text>*/}
               </Form.Group>
             </Col>
           </Row>

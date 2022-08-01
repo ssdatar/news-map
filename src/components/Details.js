@@ -63,6 +63,11 @@ function Details(props) {
         // sortFunction: sortReach
       },
       {
+        name: 'Owner',
+        selector: row => row.OWNER,
+        sortable: true,
+      },
+      {
         name: 'Ownership',
         selector: row => row.OWTYPE,
         sortable: false,
