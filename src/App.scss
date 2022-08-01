@@ -105,6 +105,20 @@
   }
 }
 
+.source {
+  &__type {
+    &--shortcut {
+      padding: .25em;
+      background: $theme-blue;
+      color: #fff;
+      
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+}
+
 .spacer {
   height: 15px;
 }

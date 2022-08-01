@@ -37,13 +37,14 @@ function App() {
     language: [],
     county: [],
     ownership: [],
-    outlet: '',
+    sector: [],
   });
 
   const [formOptions, setFormOptions] = useState({
     language: [],
     county: [],
     ownership: [],
+    sector: [],
   });
 
   useEffect(() => {
@@ -65,6 +66,7 @@ function App() {
             language: [...new Set(parsedMain.map(d => d['NON-ENGLISH/ BIPOC-SERVING']))],
             county: [...new Set(parsedMain.map(d => d.COUNTY))],
             ownership: [...new Set(parsedMain.map(d => d.OWTYPE))],
+            sector: [...new Set(parsedMain.map(d => d.SECTOR))],
           });
 
           setDetails({ 
@@ -141,22 +143,22 @@ function App() {
     });
   };
 
+  const resetSummary = () => setSummary(null);
+
   useEffect(() => {
     if (allData) {
-      const { county, language } = filterOptions;
+      console.log(filterOptions);
       
       const filterKeys = {
         county: 'COUNTY',
         language: 'NON-ENGLISH/ BIPOC-SERVING',
         ownership: 'OWTYPE',
-        // outlet: 'OUTLET'
+        sector: 'SECTOR',
       };
 
-      const toFilter = Object.keys(filterOptions)
-        .filter(k => filterOptions[k].length > 0)
-        .map(d => filterKeys[d]);
-
       let filterValues = {};
+      // const checkFilter = Object.keys(filterKeys)
+      //   .map(fk => filterOptions[fk])
 
       Object.keys(filterKeys).forEach(fk => {
         if (filterOptions[fk].length) {
@@ -166,16 +168,11 @@ function App() {
         }
       });
 
-      // console.log(filterValues);
-      // console.log('filterOptions', filterOptions);
-      // console.log('toFilter',toFilter);
-
-      // console.log(filterValues.language.includes('English'));
-
       const refreshData = allData.filter(row => 
         filterValues.county.includes(row['COUNTY']) && 
         filterValues.language.includes(row['NON-ENGLISH/ BIPOC-SERVING']) && 
-        filterValues.ownership.includes(row['OWTYPE']) 
+        filterValues.ownership.includes(row['OWTYPE']) &&
+        filterValues.sector.includes(row['SECTOR']) 
         // && row['OUTLET'].toLowerCase().indexOf(filterValues.outlet) > -1
       );
 
@@ -189,7 +186,6 @@ function App() {
 
   }, [filterOptions]);
 
-  // console.log(...[].concat(...mapColor()));
   let colorArray = [
     'step', 
     ['number', ['get', 'total_sources']],
@@ -250,8 +246,13 @@ function App() {
               <Col xs={6}>
                 {summary && (
                   <div>
-                    <h6>News sources</h6>
-                    <Sources type='mainstream' county={summary.properties.NAME} sources={summary.properties.source_summary} />
+                    
+                    <Sources 
+                      type='mainstream' 
+                      county={summary.properties.NAME} 
+                      sources={summary.properties.source_summary}
+                      refreshTable={ (obj) => filterChange('sector', obj.sector) } 
+                    />
                   </div>
                 )}
               </Col>              
@@ -279,7 +280,7 @@ function App() {
                 <Form.Label>Language</Form.Label>
                 <Typeahead
                   id="table-language-filter"
-                  className='table-filter__language'
+                  className='table-filter__form table-filter__language'
                   labelKey="name"
                   multiple
                   // onInputChange={(text, string) => {console.log(text,string)}}
@@ -296,10 +297,15 @@ function App() {
                 <Form.Label>County</Form.Label>
                 <Typeahead
                   id="table-county-filter"
-                  className='table-filter__county'
+                  className='table-filter__form table-filter__county'
                   labelKey="county"
                   multiple
-                  onChange={(selected) => filterChange('county', selected)}
+                  onChange={(selected) => {
+                    if (!selected.length) {
+                      resetSummary();
+                    } 
+                    filterChange('county', selected);
+                  }}
                   options={formOptions.county}
                   placeholder="Select a county"
                   selected={filterOptions.county}
@@ -313,7 +319,7 @@ function App() {
                 <Typeahead
                   id="table-ownership-filter"
                   labelKey="owner"
-                  className='table-filter__owner'
+                  className='table-filter__form table-filter__owner'
                   multiple
                   onChange={(selected) => filterChange('ownership', selected)}
                   options={formOptions.ownership}
@@ -322,11 +328,27 @@ function App() {
                 />
               </Form.Group>
             </Col>
+
+            <Col xs={3}>
+              <Form.Group style={{ marginTop: '20px' }}>
+                <Form.Label>Sector</Form.Label>
+                <Typeahead
+                  id="table-sector-filter"
+                  labelKey="sector"
+                  className='table-filter__form table-filter__sector'
+                  multiple
+                  onChange={(selected) => filterChange('sector', selected)}
+                  options={formOptions.sector}
+                  placeholder="Type of news organization"
+                  selected={filterOptions.sector}
+                />
+              </Form.Group>
+            </Col>
           </Row>
 
           <Row>
             <Col xs={4}>
-              <Form.Group className='table-filter__outlet'>
+              <Form.Group className='table-filter__form table-filter__outlet'>
                 <Form.Label>Search for an news organization</Form.Label>
                 <Form.Control type="text" placeholder="Search" 
                   onChange={ searchHandler }

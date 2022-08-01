@@ -1,4 +1,13 @@
 import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
+
+const sourceClick = (e, props) => {
+  // console.log(e.target.textContent, props);
+  props.refreshTable({
+    county: [props.county],
+    sector: [e.target.textContent],
+  });
+};
 
 function Sources(props) {
   // console.log(props);
@@ -7,7 +16,7 @@ function Sources(props) {
     return (
       <div className='source'>
         {/*<h6>news sources</h6>*/}
-        <Table  className='source__table' hover responsive striped>
+        <Table  className='source__table' responsive>
           {/*<thead>
             <tr>
               <th>Type of source</th>
@@ -18,7 +27,12 @@ function Sources(props) {
           <tbody>
           { sources.map((s, i) => (
             <tr key={i}>
-              <td>{ s[0] }</td>
+              <td>
+                <Button 
+                  onClick={e => sourceClick(e, props) } 
+                  variant="outline-light" 
+                  className='source__type--shortcut'>{ s[0] }</Button>
+              </td>
               <td>{ s[1] }</td>
             </tr>
           ))}
