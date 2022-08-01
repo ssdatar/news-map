@@ -108,10 +108,11 @@ function App() {
     const hedText = {
       'STATEWIDE': 'Statewide news outlets',
       'COLab': 'COLab news outlets',
-      'CPA': 'CPA news outlets'
+      'CPA': 'CPA news outlets',
+      'All': 'All news outlets',
     };
 
-    const btnData = allData.filter(d => d[key] === 'x');
+    const btnData = (key === 'All') ? allData : allData.filter(d => d[key] === 'x');
     
     setDetails({ 
       header: hedText[key], 
@@ -264,6 +265,7 @@ function App() {
               <Button onClick={e => buttonHandler(e, 'STATEWIDE') } variant="outline-dark" className='filter-table-btn'>Statewide publications</Button>
               <Button onClick= {e => buttonHandler(e, 'COLab') } variant="outline-dark" className='filter-table-btn'>COLab publications</Button>
               <Button onClick= {e => buttonHandler(e, 'CPA') } variant="outline-dark" className='filter-table-btn'>CPA publications</Button>
+              <Button onClick= {e => buttonHandler(e, 'All') } variant="outline-dark" className='filter-table-btn'>Show all</Button>
             </div>
           </Col>
         </Row>
