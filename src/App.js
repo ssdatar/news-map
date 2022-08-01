@@ -329,7 +329,7 @@ function App() {
               </Form.Group>
             </Col>
 
-            <Col xs={3}>
+            <Col xs={12} md={4}>
               <Form.Group style={{ marginTop: '20px' }}>
                 <Form.Label>Sector</Form.Label>
                 <Typeahead
