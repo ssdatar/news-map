@@ -275,7 +275,7 @@ function App() {
 
         <div className="table-filter">
           <Row>
-            <Col xs={3}>
+            <Col xs={12} md={3}>
               <Form.Group style={{ marginTop: '20px' }}>
                 <Form.Label>Language</Form.Label>
                 <Typeahead
@@ -292,7 +292,7 @@ function App() {
               </Form.Group>
             </Col>
 
-            <Col xs={3}>
+            <Col xs={12} md={3}>
               <Form.Group style={{ marginTop: '20px' }}>
                 <Form.Label>County</Form.Label>
                 <Typeahead
@@ -313,7 +313,7 @@ function App() {
               </Form.Group>
             </Col>
 
-            <Col xs={3}>
+            <Col xs={12} md={3}>
               <Form.Group style={{ marginTop: '20px' }}>
                 <Form.Label>Ownership</Form.Label>
                 <Typeahead
@@ -347,8 +347,8 @@ function App() {
           </Row>
 
           <Row>
-            <Col xs={4}>
-              <Form.Group className='table-filter__form table-filter__outlet'>
+            <Col xs={12} md={4}>
+              <Form.Group className='table-filter__outlet'>
                 <Form.Label>Search for an news organization</Form.Label>
                 <Form.Control type="text" placeholder="Search" 
                   onChange={ searchHandler }
