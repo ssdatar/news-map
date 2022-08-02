@@ -15,6 +15,7 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import Form from 'react-bootstrap/Form';
+import Table from 'react-bootstrap/Table';
 
 import axios from 'axios';
 import { addData, processSheet, lookupRef } from './utils';
@@ -240,23 +241,19 @@ function App() {
                   <h4 className='summary__hed'>{ summary.properties.NAME } County</h4>
                   <Census feature={ summary }/>
                   <p className='summary__intro'>This county has { summary.properties.total_sources } news sources.</p>
+
+                  <Row>
+                    <Col sm={6}>
+                      <Sources 
+                        type='mainstream' 
+                        county={summary.properties.NAME} 
+                        sources={summary.properties.source_summary}
+                        refreshTable={ (obj) => filterChange('sector', obj.sector) } 
+                      />
+                    </Col>
+                  </Row>                  
                 </div>
               )}
-            <Row>
-              <Col xs={6}>
-                {summary && (
-                  <div>
-                    
-                    <Sources 
-                      type='mainstream' 
-                      county={summary.properties.NAME} 
-                      sources={summary.properties.source_summary}
-                      refreshTable={ (obj) => filterChange('sector', obj.sector) } 
-                    />
-                  </div>
-                )}
-              </Col>              
-            </Row>
           </Col>
         </Row>
 
@@ -329,7 +326,7 @@ function App() {
               </Form.Group>
             </Col>
 
-            <Col xs={12} md={4}>
+            <Col xs={12} md={3}>
               <Form.Group style={{ marginTop: '20px' }}>
                 <Form.Label>Sector</Form.Label>
                 <Typeahead

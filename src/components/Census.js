@@ -17,7 +17,7 @@ function Census(props) {
     pct: parseFloat((100 * (properties[raceKeys[i]] / properties.total_pop)).toFixed(1))
   }));
 
-  // console.log(raceData);
+  console.log(props);
   // console.log(properties.total_pop, raceKeys.map(d => properties[d]).reduce((a, b) => a + b));
 
   const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, race, index }) => {
@@ -55,8 +55,8 @@ function Census(props) {
         </Col>
       </Row>
 
-      {/*<Row>
-        <Col className="sm-6">
+{/*      <Row>
+        <Col sm='6'>
           <ResponsiveContainer width='100%' height={300}>
             <PieChart>
               <Pie 
@@ -70,9 +70,6 @@ function Census(props) {
               </Pie>
             </PieChart>
           </ResponsiveContainer>
-        </Col>
-        <Col className="sm-6">
-          
         </Col>
       </Row>*/}
     </div>

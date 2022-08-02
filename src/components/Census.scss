@@ -6,8 +6,16 @@
   }
 
   &__number {
-    background-color: #efefef;
     padding: 0 5px;
+    text-align: center;
+    border-bottom: 1px solid #d3d3d3;
+
+    @media screen and (min-width: 500px) {
+      background-color: #efefef;
+      text-align: left;
+      border: none;
+      padding: .25em 1em
+    }
 
     &--num {
       font-weight: bold;
