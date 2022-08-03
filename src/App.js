@@ -6,6 +6,7 @@ import Map from './components/Map';
 import Sources from './components/Sources';
 import Details from './components/Details';
 import Census from './components/Census';
+import Race from './components/Race';
 import Legend from './components/Legend';
 import { mapColor } from './components/utils';
 
@@ -250,6 +251,11 @@ function App() {
                         sources={summary.properties.source_summary}
                         refreshTable={ (obj) => filterChange('sector', obj.sector) } 
                       />
+                    </Col>
+
+                    <Col sm={6}>
+                      <p className='summary__demographics'>Demographics</p>
+                      <Race feature={summary} />
                     </Col>
                   </Row>                  
                 </div>

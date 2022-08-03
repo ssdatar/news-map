@@ -17,7 +17,7 @@ function Census(props) {
     pct: parseFloat((100 * (properties[raceKeys[i]] / properties.total_pop)).toFixed(1))
   }));
 
-  console.log(props);
+  // console.log(props);
   // console.log(properties.total_pop, raceKeys.map(d => properties[d]).reduce((a, b) => a + b));
 
   const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, race, index }) => {
