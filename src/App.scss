@@ -103,6 +103,18 @@
   font-family: 'Montserrat', sans-serif !important;
 }
 
+.chart {
+  &__container {
+    width: 100%;
+    height: 250px;
+  }
+
+  &__tooltip {
+    background: #fafafa;
+    padding: 1em;
+  }
+}
+
 .details {
   margin: .5em 0;
 
