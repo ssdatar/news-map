@@ -6,10 +6,10 @@ const path = require('path');
 const keyFile = 'key.json';
 const spreadsheetId = [
   '1bsA8GRGqkfyDr-tGlvbEkfZS7caNzLaloi_DGri5S5Q',
-  // '1UbaS83sKrUrH3c7e-QPzVkiMsmmWA9HIB53ngrcp560'
+  '1V8tz9sjYu4KiODuCjcBKBaqEjlf-w-Y8-UxB6a0mYO8'
 ];
-const ranges = ['EditedList-News outlets by county!A1:T'];
-const outFileNames = ['mainstream.json'];
+const ranges = ['EditedList-News outlets by county!A1:T', 'CountyForMap+StateWide!A2:E'];
+const outFileNames = ['mainstream.json', 'ratings.json'];
 
 // https://github.com/rdmurphy/sheet-to-data/blob/master/index.js
 function zipObject(keys, values) {
@@ -37,6 +37,15 @@ const ownerType = (t) => {
   return typeDict[t] || 'Unknown/Other';
 };
 
+function processMainData(data) {
+  data.forEach(row => {
+    row['OWTYPE'] = ownerType(row['OWTYPE'])
+    row['REACH (if available)'] = row['REACH (if available)'].length ? +row['REACH (if available)'] : 0;
+    row['NON-ENGLISH/ BIPOC-SERVING'] = row['NON-ENGLISH/ BIPOC-SERVING'].length ? row['NON-ENGLISH/ BIPOC-SERVING'] : 'English';
+  });
+  return data;
+}
+
 async function main() {
   // this method looks for the GCLOUD_PROJECT and GOOGLE_APPLICATION_CREDENTIALS
   // environment variables to establish authentication
@@ -61,16 +70,10 @@ async function main() {
 
     const rows = results.data.values;
     const headers = rows[0];
-    // console.log(rows[1])
-    const data = rows.slice(1)
+    const records = rows.slice(1)
       .map(values => zipObject(headers, values));
-      
-    data.forEach(row => {
-      row['OWTYPE'] = ownerType(row['OWTYPE'])
-      row['REACH (if available)'] = row['REACH (if available)'].length ? +row['REACH (if available)'] : 0;
-      row['NON-ENGLISH/ BIPOC-SERVING'] = row['NON-ENGLISH/ BIPOC-SERVING'].length ? row['NON-ENGLISH/ BIPOC-SERVING'] : 'English';
-    });
     
+    const data = !i ? processMainData(records) : records;
     const fp = 'public/' + outFileNames[i];
 
     fs.writeFileSync(fp, JSON.stringify({ data }));
