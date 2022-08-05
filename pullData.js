@@ -3,6 +3,8 @@ const { google } = require('googleapis');
 const os = require('os');
 const fs = require('fs');
 const path = require('path');
+const journalize = require('journalize');
+
 const keyFile = 'key.json';
 const spreadsheetId = [
   '1bsA8GRGqkfyDr-tGlvbEkfZS7caNzLaloi_DGri5S5Q',
@@ -42,6 +44,7 @@ function processMainData(data) {
     row['OWTYPE'] = ownerType(row['OWTYPE'])
     row['REACH (if available)'] = row['REACH (if available)'].length ? +row['REACH (if available)'] : 0;
     row['NON-ENGLISH/ BIPOC-SERVING'] = row['NON-ENGLISH/ BIPOC-SERVING'].length ? row['NON-ENGLISH/ BIPOC-SERVING'] : 'English';
+    row['SECTOR'] = journalize.capfirst(row['SECTOR'].toLowerCase());
   });
   return data;
 }

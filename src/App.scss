@@ -63,17 +63,11 @@
   }
 }
 
-// .tooltip {
-//   position: absolute;
-//   margin: 8px;
-//   padding: 4px;
-//   background: rgba(0, 0, 0, 0.1);
-//   color: #000;
-//   max-width: 300px;
-//   font-size: 1em;
-//   z-index: 9;
-//   pointer-events: none;
-// }
+.tooltip {
+  &__text {
+    margin-bottom: .25em;
+  }
+}
 
 .legend {
   display: flex;
