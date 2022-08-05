@@ -32,6 +32,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "pregetsheet": "node pullData.js",
+    "getsheet": "node processData",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "react-scripts start",
     "build": "react-scripts build",

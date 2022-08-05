@@ -163,20 +163,24 @@ function App() {
       Object.keys(filterKeys).forEach(fk => {
         if (filterOptions[fk].length) {
           filterValues[fk] = filterOptions[fk];
+        } else if (fk === 'search') {
+          filterValues[fk] = [];
         } else {
           filterValues[fk] = [...new Set(allData.map(d => d[filterKeys[fk]]))];
         }
       });
+
+      // console.log(filterValues);
 
       const refreshData = allData.filter(row => 
         filterValues.county.includes(row['COUNTY']) && 
         filterValues.language.includes(row['NON-ENGLISH/ BIPOC-SERVING']) && 
         filterValues.ownership.includes(row['OWTYPE']) &&
         filterValues.sector.includes(row['SECTOR']) && 
-        row['OUTLET'].toLowerCase().indexOf(filterValues.search[0]) > -1
-        // (filterValues.search[0].length > 0 ? 
-        //     row['OUTLET'].toLowerCase().indexOf(filterValues.outlet) > -1 
-        //     : true)
+        // row['OUTLET'].toLowerCase().indexOf(filterValues.search[0]) > -1
+        (filterValues.search.length > 0 ? 
+            row['OUTLET'].toLowerCase().indexOf(filterValues.search[0]) > -1
+            : true)
       );
       
       setDetails({
