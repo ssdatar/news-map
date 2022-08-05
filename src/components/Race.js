@@ -13,8 +13,8 @@ function Race(props) {
   }))
   .sort((a, b) => b.pct - a.pct);
 
-  console.log(properties);
-  console.log(raceData);
+  // console.log(properties);
+  // console.log(raceData);
 
   return (
     <Table  className='source__table' striped hover responsive>    

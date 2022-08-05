@@ -30,8 +30,6 @@ function App() {
   const [allData, setAllData] = useState(null);
   const [lookup, setLookup] = useState(null);
   const [shapeFile, setShapeFile] = useState(null);
-  const [nonTrad, setNonTrad] = useState(null);
-  const [ntLookup, setNtLookup] = useState(null);
   const [summary, setSummary] = useState(null);
   const [details, setDetails] = useState(null);
 
@@ -40,6 +38,7 @@ function App() {
     county: [],
     ownership: [],
     sector: [],
+    search: [],
   });
 
   const [formOptions, setFormOptions] = useState({
@@ -47,6 +46,7 @@ function App() {
     county: [],
     ownership: [],
     sector: [],
+    search: []
   });
 
   useEffect(() => {
@@ -127,7 +127,6 @@ function App() {
   }
 
   const searchHandler = (e) => {
-    console.log(e.target.value);
     const searchData = allData.filter(d => d['OUTLET'].toLowerCase().indexOf(e.target.value) > -1);
 
     setDetails({ 
@@ -149,18 +148,17 @@ function App() {
 
   useEffect(() => {
     if (allData) {
-      console.log(filterOptions);
+      // console.log(filterOptions);
       
       const filterKeys = {
         county: 'COUNTY',
         language: 'NON-ENGLISH/ BIPOC-SERVING',
         ownership: 'OWTYPE',
         sector: 'SECTOR',
+        search: 'OUTLET'
       };
 
       let filterValues = {};
-      // const checkFilter = Object.keys(filterKeys)
-      //   .map(fk => filterOptions[fk])
 
       Object.keys(filterKeys).forEach(fk => {
         if (filterOptions[fk].length) {
@@ -174,11 +172,12 @@ function App() {
         filterValues.county.includes(row['COUNTY']) && 
         filterValues.language.includes(row['NON-ENGLISH/ BIPOC-SERVING']) && 
         filterValues.ownership.includes(row['OWTYPE']) &&
-        filterValues.sector.includes(row['SECTOR']) 
-        // && row['OUTLET'].toLowerCase().indexOf(filterValues.outlet) > -1
+        filterValues.sector.includes(row['SECTOR']) && 
+        row['OUTLET'].toLowerCase().indexOf(filterValues.search[0]) > -1
+        // (filterValues.search[0].length > 0 ? 
+        //     row['OUTLET'].toLowerCase().indexOf(filterValues.outlet) > -1 
+        //     : true)
       );
-
-      // console.log(refreshData);
       
       setDetails({
         header: '',
@@ -354,7 +353,7 @@ function App() {
               <Form.Group className='table-filter__outlet'>
                 <Form.Label>Search for an news organization</Form.Label>
                 <Form.Control type="text" placeholder="Search" 
-                  onChange={ searchHandler }
+                  onChange={ e => filterChange('search', [ e.target.value ]) }
                 />
                 {/*<Form.Text className="text-muted">
                   We'll never share your email with anyone else.
