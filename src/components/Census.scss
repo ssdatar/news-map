@@ -19,10 +19,15 @@
 
     &--num {
       font-weight: bold;
-      margin-bottom: .2em;
+      margin: .2em 0;
     }
+    
     &--description {
       font-size: .9em;
+
+      @media screen and (min-width: 500px) {
+        margin-bottom: 0.25em;
+      }
     }
   }
 }

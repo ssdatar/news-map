@@ -44,7 +44,7 @@ function processMainData(data) {
     row['OWTYPE'] = ownerType(row['OWTYPE'])
     row['REACH (if available)'] = row['REACH (if available)'].length ? +row['REACH (if available)'] : 0;
     row['NON-ENGLISH/ BIPOC-SERVING'] = row['NON-ENGLISH/ BIPOC-SERVING'].length ? row['NON-ENGLISH/ BIPOC-SERVING'] : 'English';
-    row['SECTOR'] = journalize.capfirst(row['SECTOR'].toLowerCase());
+    row['SECTOR'] = row['SECTOR'] === 'TV' ? row['SECTOR'] : journalize.capfirst(row['SECTOR'].toLowerCase());
   });
   return data;
 }

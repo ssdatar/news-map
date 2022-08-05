@@ -26,17 +26,12 @@ const Map = (props) => {
       style: 'mapbox://styles/mapbox/light-v10',
       center: [-105.358887, 39.113014],
       zoom: zoom,
-      minZoom: zoom,
-      maxZoom: 6,
+      // minZoom: zoom,
+      maxZoom: 7,
       maxBounds: bounds
     });
 
     map.fitBounds(bounds);
-
-    // map.fitBounds([
-    //   [-109.059196, 36.992751], // southwestern corner of the bounds
-    //   [-102.042126,41.001982] // northeastern corner of the bounds
-    // ]);
 
     let hoveredStateId = null;
 

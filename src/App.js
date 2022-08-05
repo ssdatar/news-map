@@ -224,7 +224,7 @@ function App() {
           <Legend />
         </Row>
         <Row>
-          <Col xs={12} md={8} lg={7}>
+          <Col xs={12} md={6} lg={7}>
             <Map 
               source={shapeFile} 
               fill={ fillColor }
@@ -234,13 +234,12 @@ function App() {
             </Map>
           </Col>
 
-          <Col xs={12} md={4} lg={5}>
+          <Col xs={12} md={6} lg={5}>
             {summary &&
               (
                 <div>
                   <h4 className='summary__hed'>{ summary.properties.NAME } County</h4>
                   <Census feature={ summary }/>
-                  <p className='summary__intro'>This county has { summary.properties.total_sources } news sources.</p>
 
                   <Row>
                     <Col sm={6}>
@@ -253,7 +252,7 @@ function App() {
                     </Col>
 
                     <Col sm={6}>
-                      <p className='summary__demographics'>Demographics</p>
+                      <p className='summary__demographics'><strong>Demographics</strong></p>
                       <Race feature={summary} />
                     </Col>
                   </Row>                  
