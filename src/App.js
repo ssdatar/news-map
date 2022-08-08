@@ -17,11 +17,11 @@ import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import Form from 'react-bootstrap/Form';
 import Table from 'react-bootstrap/Table';
+import { Typeahead } from 'react-bootstrap-typeahead'; 
 
 import axios from 'axios';
 import { addData, processSheet, lookupRef } from './utils';
-
-import { Typeahead } from 'react-bootstrap-typeahead'; 
+import { initFrame } from '@newswire/frames';
 
 import './App.scss';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
@@ -81,6 +81,7 @@ function App() {
         });
     };
     getData();
+    initFrame();
   }, []);
 
   const mapFilter = (f) => {
@@ -171,7 +172,6 @@ function App() {
       });
 
       // console.log(filterValues);
-
       const refreshData = allData.filter(row => 
         filterValues.county.includes(row['COUNTY']) && 
         filterValues.language.includes(row['NON-ENGLISH/ BIPOC-SERVING']) && 
@@ -223,18 +223,16 @@ function App() {
       <Container fluid>
         <Row>
           <h1 className='App__hed bold'>Colorado News Map</h1>
-          {/*<h4 className='App__subhed'>Subhed and description come here. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</h4>*/}
           <div className='map__subhed'>Click or tap on a county to learn more about its news ecosystem.</div>
           <Legend />
         </Row>
         <Row>
           <Col xs={12} md={6} lg={7}>
             <Map 
-              source={shapeFile} 
+              source={ shapeFile } 
               fill={ fillColor }
               passData={ mapFilter }
-              data-testid='map'
-            >
+              data-testid='map'>
             </Map>
           </Col>
 
